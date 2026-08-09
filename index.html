@@ -45,7 +45,9 @@
 
   const myPhoneNumber = "9899641792";
   const message = encodeURIComponent(`New Luxury Lifts Ride Request!\nPickup: ${pickup}\nDropoff: ${dropoff}\nPassengers: ${p}\nTotal Fare: $${total.toFixed(2)}`);
-  
+    const myPhoneNumber = "9899641792";
+  window.location.href = `sms:${myPhoneNumber}?body=New%20Ride%20Request!`;
+
   window.location.href = `sms:${myPhoneNumber}?body=${message}`;
 });
 
