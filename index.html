@@ -36,16 +36,10 @@ body { background: #050608; color: #fff; height: 100vh; display: flex; flex-dire
 .status-pill { background: rgba(212, 175, 55, 0.15); color: #d4af37; font-size: 10px; padding: 4px 10px; border-radius: 20px; border: 1px solid rgba(212, 175, 55, 0.3); font-weight: 600; text-transform: uppercase; }
 
 /* Main Dark Ride Sheet */
-.sheet { flex: 1; background: #0e1117; border-top-left-radius: 24px; border-top-right-radius: 24px; padding: 12px 18px 18px 18px; box-shadow: 0 -10px 30px rgba(0,0,0,0.8); border-top: 1px solid #1f2433; overflow-y: auto; display: flex; flex-direction: column; }
-.sheet-handle { width: 40px; height: 4px; background: #2f3446; border-radius: 2px; margin: 0 auto 10px auto; }
+.sheet { flex: 1; background: #0e1117; border-top-left-radius: 24px; border-top-right-radius: 24px; padding: 14px 18px 18px 18px; box-shadow: 0 -10px 30px rgba(0,0,0,0.8); border-top: 1px solid #1f2433; overflow-y: auto; display: flex; flex-direction: column; }
+.sheet-handle { width: 40px; height: 4px; background: #2f3446; border-radius: 2px; margin: 0 auto 12px auto; }
 
-/* Quick Destination Chips */
-.quick-chips { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 6px; scrollbar-width: none; }
-.quick-chips::-webkit-scrollbar { display: none; }
-.chip { background: #161b26; border: 1px solid #282f42; color: #b0b7c9; padding: 5px 10px; border-radius: 14px; font-size: 11px; font-weight: 600; white-space: nowrap; cursor: pointer; transition: all 0.2s; }
-.chip:hover, .chip:active { background: #d4af37; color: #000; border-color: #d4af37; }
-
-.input-group { position: relative; margin-bottom: 8px; }
+.input-group { position: relative; margin-bottom: 10px; }
 .input-group label { position: absolute; left: 14px; top: 7px; font-size: 9px; text-transform: uppercase; color: #8c93a8; letter-spacing: 1px; font-weight: bold; z-index: 2; }
 .input-group input { width: 100%; padding: 22px 14px 6px 14px; background: #141824; border: 1px solid #222838; border-radius: 10px; color: #fff; font-size: 14px; outline: none; transition: border-color 0.2s; }
 .input-group input:focus { border-color: #d4af37; }
@@ -54,20 +48,20 @@ body { background: #050608; color: #fff; height: 100vh; display: flex; flex-dire
 .form-row .input-group { flex: 1; }
 
 /* Ride Selector Option Card */
-.ride-option { display: flex; align-items: center; justify-content: space-between; background: #141824; border: 2px solid #d4af37; border-radius: 12px; padding: 8px 14px; margin: 6px 0; }
+.ride-option { display: flex; align-items: center; justify-content: space-between; background: #141824; border: 2px solid #d4af37; border-radius: 12px; padding: 10px 14px; margin: 8px 0; }
 .ride-info h3 { font-size: 14px; color: #fff; margin-bottom: 1px; font-weight: 700; }
 .ride-info p { font-size: 11px; color: #9da3b8; }
 .ride-price-container { text-align: right; }
 .ride-price { font-size: 17px; font-weight: bold; color: #d4af37; }
 .fare-toggle { font-size: 9px; color: #8c93a8; text-decoration: underline; cursor: pointer; margin-top: 1px; }
 
-/* Fare Breakdown Modal / Box */
+/* Fare Breakdown Tooltip / Box */
 .fare-breakdown { background: #161b26; border: 1px solid #282f42; border-radius: 8px; padding: 8px 12px; margin-bottom: 8px; font-size: 11px; color: #9da3b8; display: none; }
 .fare-breakdown.show { display: block; }
 .fare-breakdown div { display: flex; justify-content: space-between; margin-bottom: 3px; }
 .fare-breakdown div:last-child { margin-bottom: 0; color: #fff; font-weight: bold; border-top: 1px solid #222838; padding-top: 3px; }
 
-/* Action Buttons & Shift Counter Row */
+/* Action Buttons */
 .action-row { display: flex; gap: 8px; margin-top: 6px; }
 .btn-primary { flex: 2; padding: 12px; background: #d4af37; color: #000; border: none; border-radius: 10px; font-size: 15px; font-weight: bold; cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px; transition: background 0.2s; }
 .btn-primary:hover { background: #e5be40; }
@@ -75,10 +69,6 @@ body { background: #050608; color: #fff; height: 100vh; display: flex; flex-dire
 .btn-secondary:hover { background: #252c3d; color: #fff; }
 
 .cashapp-btn { width: 100%; padding: 10px; background: #00D632; color: #000; border-radius: 10px; font-size: 14px; font-weight: bold; text-align: center; text-decoration: none; display: block; margin-top: 6px; box-sizing: border-box; }
-
-/* Shift Tracker Dashboard Bar */
-.shift-stats { display: flex; justify-content: space-between; background: #141824; border: 1px solid #222838; border-radius: 8px; padding: 6px 12px; margin-top: 8px; font-size: 11px; color: #9da3b8; }
-.shift-stats span { color: #d4af37; font-weight: bold; }
 
 /* Bottom Nav Bar */
 .bottom-nav { display: flex; justify-content: space-around; background: #050608; border-top: 1px solid #12151e; padding: 8px 0; }
@@ -101,24 +91,15 @@ body { background: #050608; color: #fff; height: 100vh; display: flex; flex-dire
 <div class="sheet">
   <div class="sheet-handle"></div>
   
-  <!-- Quick Destination Selector Chips -->
-  <div class="quick-chips">
-    <div class="chip" onclick="setDestination('711 South Euclid, Bay City')">Bay City</div>
-    <div class="chip" onclick="setDestination('Midland Mall, Midland')">Midland</div>
-    <div class="chip" onclick="setDestination('Frankenmuth Bavarian Inn')">Frankenmuth</div>
-    <div class="chip" onclick="setDestination('Bridgeport Town Center')">Bridgeport</div>
-    <div class="chip" onclick="setDestination('DTW Airport Terminal')">DTW Airport</div>
-  </div>
-
   <form id="form">
     <div class="input-group">
-      <label for="pickup">Pickup</label>
-      <input type="text" id="pickup" value="2323 North Oakley" autocomplete="off" required>
+      <label for="pickup">Pickup Address</label>
+      <input type="text" id="pickup" placeholder="Enter pickup location..." autocomplete="off" required>
     </div>
     
     <div class="input-group">
-      <label for="dropoff">Dropoff</label>
-      <input type="text" id="dropoff" value="711 South Euclid, Bay City" autocomplete="off" required>
+      <label for="dropoff">Dropoff Address</label>
+      <input type="text" id="dropoff" placeholder="Enter dropoff location..." autocomplete="off" required>
     </div>
 
     <div class="form-row">
@@ -134,7 +115,7 @@ body { background: #050608; color: #fff; height: 100vh; display: flex; flex-dire
         <p>Private Chauffeur • 350T Turbo</p>
       </div>
       <div class="ride-price-container">
-        <div class="ride-price" id="tier-price">$30.00</div>
+        <div class="ride-price" id="tier-price">$15.00</div>
         <div class="fare-toggle" onclick="toggleBreakdown()">Details</div>
       </div>
     </div>
@@ -142,8 +123,9 @@ body { background: #050608; color: #fff; height: 100vh; display: flex; flex-dire
     <!-- Expandable Fare Breakdown Tooltip -->
     <div class="fare-breakdown" id="fareBreakdownBox">
       <div id="breakdown-base"><span>Base Rate (Saginaw Local):</span> <span>$15.00</span></div>
-      <div id="breakdown-zone"><span>Zone Surcharge / Mileage:</span> <span>$15.00</span></div>
-      <div><span>Calculated Total:</span> <span id="breakdown-total">$30.00</span></div>
+      <div id="breakdown-zone"><span>Zone Surcharge / Mileage:</span> <span>$0.00</span></div>
+      <div id="breakdown-passengers"><span>Extra Passengers:</span> <span>$0.00</span></div>
+      <div><span>Calculated Total:</span> <span id="breakdown-total">$15.00</span></div>
     </div>
 
     <div class="action-row">
@@ -152,12 +134,6 @@ body { background: #050608; color: #fff; height: 100vh; display: flex; flex-dire
     </div>
 
     <a href="https://cash.app/$FlipBucks11" target="_blank" class="cashapp-btn">Pay with Cash App</a>
-
-    <!-- Shift Earnings & Trip Counter -->
-    <div class="shift-stats">
-      <div>Shift Rides: <span id="trip-counter">0</span></div>
-      <div>Est. Shift Total: <span id="shift-earnings">$0.00</span></div>
-    </div>
   </form>
 </div>
 
@@ -198,18 +174,8 @@ const tierPrice = document.getElementById('tier-price');
 const breakdownBox = document.getElementById('fareBreakdownBox');
 const breakdownBase = document.getElementById('breakdown-base');
 const breakdownZone = document.getElementById('breakdown-zone');
+const breakdownPassengers = document.getElementById('breakdown-passengers');
 const breakdownTotal = document.getElementById('breakdown-total');
-const tripCounterEl = document.getElementById('trip-counter');
-const shiftEarningsEl = document.getElementById('shift-earnings');
-
-let shiftTrips = parseInt(localStorage.getItem('ct4_trips') || '0');
-let shiftTotal = parseFloat(localStorage.getItem('ct4_earnings') || '0.00');
-updateShiftDisplay();
-
-function setDestination(address) {
-  dropoffInput.value = address;
-  updatePrice();
-}
 
 function toggleBreakdown() {
   breakdownBox.classList.toggle('show');
@@ -218,6 +184,7 @@ function toggleBreakdown() {
 function calculateFareDetails() {
   const p = pickupInput.value.toLowerCase();
   const d = dropoffInput.value.toLowerCase();
+  const passengers = parseInt(passInput.value) || 1;
 
   const isBayCity = (text) => text.includes('bay city') || text.includes('euclid') || text.includes('baycounty');
   const isMidland = (text) => text.includes('midland');
@@ -228,23 +195,44 @@ function calculateFareDetails() {
   const pOuter = isBayCity(p) || isMidland(p) || isFrankenmuth(p) || isBridgeport(p) || isDtw(p);
   const dOuter = isBayCity(d) || isMidland(d) || isFrankenmuth(d) || isBridgeport(d) || isDtw(d);
 
-  if (isDtw(p) || isDtw(d)) return { base: 50, zone: 120, total: 170, label: "DTW Airport Run" };
+  let base = 15;
+  let zone = 0;
+  let label = "Local Saginaw Flat";
 
-  // Dropoff is Out-of-Town from Local Saginaw
-  if (!pOuter && isBridgeport(d)) return { base: 15, zone: 5, total: 20, label: "Bridgeport Surcharge" };
-  if (!pOuter && (isBayCity(d) || isFrankenmuth(d))) return { base: 15, zone: 15, total: 30, label: "Bay City / Frankenmuth Zone" };
-  if (!pOuter && isMidland(d)) return { base: 15, zone: 30, total: 45, label: "Midland Distance Fee" };
+  if (isDtw(p) || isDtw(d)) {
+    base = 50;
+    zone = 120;
+    label = "DTW Airport Run";
+  } else if (!pOuter && isBridgeport(d)) {
+    zone = 5;
+    label = "Bridgeport Surcharge";
+  } else if (!pOuter && (isBayCity(d) || isFrankenmuth(d))) {
+    zone = 15;
+    label = "Bay City / Frankenmuth Zone";
+  } else if (!pOuter && isMidland(d)) {
+    zone = 30;
+    label = "Midland Distance Fee";
+  } else if (isBridgeport(p) && !dOuter) {
+    zone = 10;
+    label = "Bridgeport Pickup";
+  } else if ((isBayCity(p) || isFrankenmuth(p)) && !dOuter) {
+    zone = 30;
+    label = "Outer Zone Pickup";
+  } else if (isMidland(p) && !dOuter) {
+    zone = 30;
+    label = "Midland Pickup";
+  } else if (pOuter || dOuter) {
+    zone = 20;
+    label = "Inter-City Fare";
+  }
 
-  // Pickup is Out-of-Town going to Local Saginaw
-  if (isBridgeport(p) && !dOuter) return { base: 15, zone: 10, total: 25, label: "Bridgeport Pickup" };
-  if ((isBayCity(p) || isFrankenmuth(p)) && !dOuter) return { base: 15, zone: 30, total: 45, label: "Outer Zone Pickup" };
-  if (isMidland(p) && !dOuter) return { base: 15, zone: 30, total: 45, label: "Midland Pickup" };
+  // Extra passenger charge: $5 for each additional passenger past 1
+  const extraPassengers = Math.max(0, passengers - 1);
+  const passengerFee = extraPassengers * 5;
 
-  // Both local Saginaw
-  if (!pOuter && !dOuter) return { base: 15, zone: 0, total: 15, label: "Local Saginaw Flat" };
+  const total = base + zone + passengerFee;
 
-  // Inter-city fallback
-  return { base: 15, zone: 20, total: 35, label: "Inter-City Fare" };
+  return { base, zone, passengerFee, total, label, passengers };
 }
 
 function updatePrice() {
@@ -252,6 +240,7 @@ function updatePrice() {
   tierPrice.innerText = `$${res.total.toFixed(2)}`;
   breakdownBase.innerHTML = `<span>Base Rate:</span> <span>$${res.base.toFixed(2)}</span>`;
   breakdownZone.innerHTML = `<span>${res.label}:</span> <span>$${res.zone.toFixed(2)}</span>`;
+  breakdownPassengers.innerHTML = `<span>Extra Passengers (${Math.max(0, res.passengers - 1)}x $5):</span> <span>$${res.passengerFee.toFixed(2)}</span>`;
   breakdownTotal.innerText = `$${res.total.toFixed(2)}`;
 }
 
@@ -263,16 +252,12 @@ function resetForm() {
   pickupInput.focus();
 }
 
-function updateShiftDisplay() {
-  tripCounterEl.innerText = shiftTrips;
-  shiftEarningsEl.innerText = `$${shiftTotal.toFixed(2)}`;
-}
-
 updatePrice();
 
 ['input', 'keyup', 'change', 'paste'].forEach(eventType => {
   pickupInput.addEventListener(eventType, updatePrice);
   dropoffInput.addEventListener(eventType, updatePrice);
+  passInput.addEventListener(eventType, updatePrice);
 });
 
 document.getElementById('form').addEventListener('submit', function(e) {
@@ -282,13 +267,6 @@ document.getElementById('form').addEventListener('submit', function(e) {
   const pass = passInput.value;
   const res = calculateFareDetails();
   
-  // Update shift tally counter automatically on dispatch
-  shiftTrips += 1;
-  shiftTotal += res.total;
-  localStorage.setItem('ct4_trips', shiftTrips);
-  localStorage.setItem('ct4_earnings', shiftTotal);
-  updateShiftDisplay();
-
   window.location.href = `sms:9899641792?body=` + encodeURIComponent(`New Ride Request!\nVehicle: Cadillac CT4 350T\nPickup: ${p}\nDropoff: ${d}\nPassengers: ${pass}\nTotal: $${res.total.toFixed(2)}`);
 });
 </script>
