@@ -85,13 +85,13 @@ body { background: #08090c; color: #fff; height: 100vh; display: flex; flex-dire
   <form id="form">
     <div class="input-group">
       <label for="pickup">Pickup</label>
-      <input type="text" id="pickup" placeholder="Enter street or pick location..." autocomplete="off" required>
+      <input type="text" id="pickup" placeholder="Enter pickup address..." autocomplete="off" required>
       <div id="pickup-suggestions" class="suggestions-list"></div>
     </div>
     
     <div class="input-group">
       <label for="dropoff">Dropoff</label>
-      <input type="text" id="dropoff" placeholder="Enter street or pick destination..." autocomplete="off" required>
+      <input type="text" id="dropoff" placeholder="Enter dropoff destination..." autocomplete="off" required>
       <div id="dropoff-suggestions" class="suggestions-list"></div>
     </div>
 
@@ -188,7 +188,7 @@ function setupDropdown(inputElement, listElement) {
   });
 
   inputElement.addEventListener('input', function() {
-    listElement.style.display = 'none'; // Allow free typing without forcing dropdown open
+    listElement.style.display = 'none';
     updatePrice();
   });
 }
@@ -205,32 +205,31 @@ function calculateFare() {
   let p = pickupInput.value.toLowerCase().trim();
   let d = dropoffInput.value.toLowerCase().trim();
 
-  const isSaginaw = (text) => text.includes('saginaw') || text.includes('oakley') || text.includes('bay road') || text.includes('mackinaw') || text.includes('janes') || text.includes('washington') || text.includes('michigan') || text.includes('tittabawassee') || text.includes('state') || text.includes('court');
+  const isSaginaw = (text) => text.includes('saginaw') || text.includes('oakley') || text.includes('bay road') || text.includes('mackinaw') || text.includes('janes') || text.includes('washington') || text.includes('michigan') || text.includes('tittabawassee') || text.includes('state') || text.includes('court') || text.length === 0;
   const isBridgeport = (text) => text.includes('bridgeport');
   const isFrankenmuth = (text) => text.includes('frankenmuth');
   const isBayCity = (text) => text.includes('bay city');
   const isMidland = (text) => text.includes('midland');
 
-  if (isSaginaw(p) && isSaginaw(d)) return 15;
+  // Matrix Evaluation
   if (isSaginaw(p) && isBridgeport(d)) return 20;
   if (isBridgeport(p) && isSaginaw(d)) return 25;
   if (isSaginaw(p) && (isFrankenmuth(d) || isBayCity(d))) return 30;
   if ((isFrankenmuth(p) || isBayCity(p)) && isSaginaw(d)) return 45;
   if ((isSaginaw(p) && isMidland(d)) || (isMidland(p) && isSaginaw(d))) return 45;
+  if (isSaginaw(p) && isSaginaw(d)) return 15;
 
-  return 35;
+  return 35; // Default catch-all for custom long-distance combos
 }
 
 function updatePrice() {
-  const pText = pickupInput.value.trim();
-  const dText = dropoffInput.value.trim();
-  if (pText.length > 0 && dText.length > 0) {
-    const total = calculateFare();
-    tierPrice.innerText = `$${total.toFixed(2)}`;
-  } else {
-    tierPrice.innerText = `$15.00`;
-  }
+  const total = calculateFare();
+  tierPrice.innerText = `$${total.toFixed(2)}`;
 }
+
+// Listen for typing/selection changes to instantly update
+pickupInput.addEventListener('input', updatePrice);
+dropoffInput.addEventListener('input', updatePrice);
 
 document.getElementById('form').addEventListener('submit', function(e) {
   e.preventDefault();
