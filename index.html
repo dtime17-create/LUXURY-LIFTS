@@ -44,12 +44,6 @@ body { background: #08090c; color: #fff; height: 100vh; display: flex; flex-dire
 .input-group input { width: 100%; padding: 24px 14px 8px 14px; background: #1a1e2b; border: 1px solid #282d3d; border-radius: 10px; color: #fff; font-size: 15px; outline: none; transition: border-color 0.2s; }
 .input-group input:focus { border-color: #d4af37; }
 
-/* Delivery-style Popup Selection Dropdown */
-.suggestions-list { position: absolute; top: 100%; left: 0; right: 0; background: #1a1e2b; border: 1px solid #d4af37; border-top: none; border-bottom-left-radius: 10px; border-bottom-right-radius: 10px; z-index: 99; max-height: 180px; overflow-y: auto; display: none; box-shadow: 0 8px 20px rgba(0,0,0,0.6); }
-.suggestion-item { padding: 12px 14px; font-size: 14px; color: #fff; cursor: pointer; border-bottom: 1px solid #282d3d; }
-.suggestion-item:last-child { border-bottom: none; }
-.suggestion-item:hover { background: #252b3d; color: #d4af37; }
-
 /* Ride Selector Option Card */
 .ride-option { display: flex; align-items: center; justify-content: space-between; background: #1a1e2b; border: 2px solid #d4af37; border-radius: 12px; padding: 10px 16px; margin: 8px 0; }
 .ride-info h3 { font-size: 15px; color: #fff; margin-bottom: 2px; font-weight: 700; }
@@ -85,14 +79,12 @@ body { background: #08090c; color: #fff; height: 100vh; display: flex; flex-dire
   <form id="form">
     <div class="input-group">
       <label for="pickup">Pickup</label>
-      <input type="text" id="pickup" placeholder="Type any custom street address..." autocomplete="off" required>
-      <div id="pickup-suggestions" class="suggestions-list"></div>
+      <input type="text" id="pickup" placeholder="Type pickup address (e.g. 123 Bay Rd)..." autocomplete="off" required>
     </div>
     
     <div class="input-group">
       <label for="dropoff">Dropoff</label>
-      <input type="text" id="dropoff" placeholder="Type any custom street destination..." autocomplete="off" required>
-      <div id="dropoff-suggestions" class="suggestions-list"></div>
+      <input type="text" id="dropoff" placeholder="Type dropoff destination (e.g. Midland)..." autocomplete="off" required>
     </div>
 
     <div class="input-group" style="margin-bottom: 5px;">
@@ -145,95 +137,34 @@ L.marker([43.4195, -83.9531], { icon: ct4Icon }).addTo(map);
 
 const pickupInput = document.getElementById('pickup');
 const dropoffInput = document.getElementById('dropoff');
-const pickupList = document.getElementById('pickup-suggestions');
-const dropoffList = document.getElementById('dropoff-suggestions');
 const passInput = document.getElementById('passengers');
 const tierPrice = document.getElementById('tier-price');
-
-const locations = [
-  "Bay Road, Saginaw",
-  "Janes Street, Saginaw",
-  "Mackinaw Street, Saginaw",
-  "Downtown Saginaw",
-  "Tittabawassee Road, Saginaw",
-  "State Street, Saginaw",
-  "Court Street, Saginaw",
-  "Washington Avenue, Saginaw",
-  "Michigan Avenue, Saginaw",
-  "Bridgeport, MI",
-  "Frankenmuth, MI",
-  "Bay City, MI",
-  "Midland, MI",
-  "Oakley, MI"
-];
-
-function setupField(inputElement, listElement) {
-  listElement.innerHTML = '';
-  locations.forEach(loc => {
-    const div = document.createElement('div');
-    div.className = 'suggestion-item';
-    div.innerText = loc;
-    div.addEventListener('click', function(e) {
-      e.stopPropagation();
-      inputElement.value = loc;
-      listElement.style.display = 'none';
-      updatePrice();
-    });
-    listElement.appendChild(div);
-  });
-
-  // Show quick list on click, but DO NOT block free typing
-  inputElement.addEventListener('click', function(e) {
-    e.stopPropagation();
-    listElement.style.display = listElement.style.display === 'block' ? 'none' : 'block';
-  });
-
-  // Full freedom to type numbers, house numbers, and custom street names
-  inputElement.addEventListener('input', function() {
-    listElement.style.display = 'none';
-    updatePrice();
-  });
-}
-
-setupField(pickupInput, pickupList);
-setupField(dropoffInput, dropoffList);
-
-document.addEventListener('click', function() {
-  pickupList.style.display = 'none';
-  dropoffList.style.display = 'none';
-});
 
 function calculateFare() {
   const p = pickupInput.value.toLowerCase().trim();
   const d = dropoffInput.value.toLowerCase().trim();
 
-  const hasKeyword = (text, keywords) => keywords.some(k => text.includes(k));
+  const isBridgeport = d.includes('bridgeport');
+  const isFrankenmuth = d.includes('frankenmuth');
+  const isBayCity = d.includes('bay city');
+  const isMidland = d.includes('midland');
 
-  const bridgeportKeys = ['bridgeport'];
-  const frankenmuthKeys = ['frankenmuth'];
-  const bayCityKeys = ['bay city'];
-  const midlandKeys = ['midland'];
+  const pIsBridgeport = p.includes('bridgeport');
+  const pIsFrankenmuth = p.includes('frankenmuth');
+  const pIsBayCity = p.includes('bay city');
+  const pIsMidland = p.includes('midland');
+
+  // Matrix Evaluation based on exact rules
+  if (!pIsBridgeport && !pIsFrankenmuth && !pIsBayCity && !pIsMidland && isBridgeport) return 20;
+  if (pIsBridgeport && !isBridgeport && !isFrankenmuth && !isBayCity && !isMidland) return 25;
+  if (!pIsBridgeport && !pIsFrankenmuth && !pIsBayCity && !pIsMidland && (isFrankenmuth || isBayCity)) return 30;
+  if ((pIsFrankenmuth || pIsBayCity) && !isBridgeport && !isFrankenmuth && !isBayCity && !isMidland) return 45;
+  if ((!pIsBridgeport && !pIsFrankenmuth && !pIsBayCity && !pIsMidland && isMidland) || (pIsMidland && !isBridgeport && !isFrankenmuth && !isBayCity && !isMidland)) return 45;
   
-  const saginawKeys = ['saginaw', 'oakley', 'bay road', 'mackinaw', 'janes', 'washington', 'michigan', 'tittabawassee', 'state', 'court', 'meridian', 'hackett', 'gsm', 'weber', 'holland', 'geneva'];
+  // Local Saginaw default ($15) if no outer city keywords trigger
+  if (!isBridgeport && !isFrankenmuth && !isBayCity && !isMidland && !pIsBridgeport && !pIsFrankenmuth && !pIsBayCity && !pIsMidland) return 15;
 
-  const isBridgeport = (text) => hasKeyword(text, bridgeportKeys);
-  const isFrankenmuth = (text) => hasKeyword(text, frankenmuthKeys);
-  const isBayCity = (text) => hasKeyword(text, bayCityKeys);
-  const isMidland = (text) => hasKeyword(text, midlandKeys);
-
-  const isOuter = (text) => isBridgeport(text) || isFrankenmuth(text) || isBayCity(text) || isMidland(text);
-
-  // Real-time matrix logic handling custom house/street numbers seamlessly:
-  if (!isOuter(p) && isBridgeport(d)) return 20;
-  if (isBridgeport(p) && !isOuter(d)) return 25;
-  if (!isOuter(p) && (isFrankenmuth(d) || isBayCity(d))) return 30;
-  if ((isFrankenmuth(p) || isBayCity(p)) && !isOuter(d)) return 45;
-  if ((!isOuter(p) && isMidland(d)) || (isMidland(p) && !isOuter(d))) return 45;
-  
-  // Default local Saginaw or custom typed street addresses within local zone
-  if (!isOuter(p) && !isOuter(d)) return 15;
-
-  return 35;
+  return 35; // Fallback for other combinations
 }
 
 function updatePrice() {
