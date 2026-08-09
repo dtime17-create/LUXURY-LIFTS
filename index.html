@@ -202,30 +202,29 @@ document.addEventListener('click', function() {
 });
 
 function calculateFare() {
-  let p = pickupInput.value.toLowerCase().trim();
-  let d = dropoffInput.value.toLowerCase().trim();
+  const p = pickupInput.value.toLowerCase().trim();
+  const d = dropoffInput.value.toLowerCase().trim();
 
+  // Helper match checks
   const isBridgeport = (text) => text.includes('bridgeport');
   const isFrankenmuth = (text) => text.includes('frankenmuth');
   const isBayCity = (text) => text.includes('bay city');
   const isMidland = (text) => text.includes('midland');
 
-  const isSaginaw = (text) => {
-    return text.includes('saginaw') || text.includes('oakley') || text.includes('bay road') || 
-           text.includes('mackinaw') || text.includes('janes') || text.includes('washington') || 
-           text.includes('michigan') || text.includes('tittabawassee') || text.includes('state') || 
-           text.includes('court') || text === '' || (!isBridgeport(text) && !isFrankenmuth(text) && !isBayCity(text) && !isMidland(text));
-  };
+  // If it's explicitly one of the outer cities, it's not Saginaw local
+  const isOuterCity = (text) => isBridgeport(text) || isFrankenmuth(text) || isBayCity(text) || isMidland(text);
 
-  // Explicit Matrix Rules
-  if (isSaginaw(p) && isBridgeport(d)) return 20;
-  if (isBridgeport(p) && isSaginaw(d)) return 25;
-  if (isSaginaw(p) && (isFrankenmuth(d) || isBayCity(d))) return 30;
-  if ((isFrankenmuth(p) || isBayCity(p)) && isSaginaw(d)) return 45;
-  if ((isSaginaw(p) && isMidland(d)) || (isMidland(p) && isSaginaw(d))) return 45;
-  if (isSaginaw(p) && isSaginaw(d)) return 15;
+  // Strict Matrix Execution
+  if (!isOuterCity(p) && isBridgeport(d)) return 20;
+  if (isBridgeport(p) && !isOuterCity(d)) return 25;
+  if (!isOuterCity(p) && (isFrankenmuth(d) || isBayCity(d))) return 30;
+  if ((isFrankenmuth(p) || isBayCity(p)) && !isOuterCity(d)) return 45;
+  if ((!isOuterCity(p) && isMidland(d)) || (isMidland(p) && !isOuterCity(d))) return 45;
+  
+  // If both are local/Saginaw addresses or blank
+  if (!isOuterCity(p) && !isOuterCity(d)) return 15;
 
-  return 35;
+  return 35; // Fallback for other long-distance mixes
 }
 
 function updatePrice() {
