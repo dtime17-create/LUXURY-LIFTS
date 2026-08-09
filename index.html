@@ -79,12 +79,12 @@ body { background: #08090c; color: #fff; height: 100vh; display: flex; flex-dire
   <form id="form">
     <div class="input-group">
       <label for="pickup">Pickup</label>
-      <input type="text" id="pickup" placeholder="Type pickup address (e.g. 123 Bay Rd)..." autocomplete="off" required>
+      <input type="text" id="pickup" placeholder="Enter pickup address..." autocomplete="off" required>
     </div>
     
     <div class="input-group">
       <label for="dropoff">Dropoff</label>
-      <input type="text" id="dropoff" placeholder="Type dropoff destination (e.g. Midland)..." autocomplete="off" required>
+      <input type="text" id="dropoff" placeholder="Enter dropoff destination..." autocomplete="off" required>
     </div>
 
     <div class="input-group" style="margin-bottom: 5px;">
@@ -144,27 +144,25 @@ function calculateFare() {
   const p = pickupInput.value.toLowerCase().trim();
   const d = dropoffInput.value.toLowerCase().trim();
 
-  const isBridgeport = d.includes('bridgeport');
-  const isFrankenmuth = d.includes('frankenmuth');
-  const isBayCity = d.includes('bay city');
-  const isMidland = d.includes('midland');
+  const isBridgeport = (text) => text.includes('bridgeport');
+  const isFrankenmuth = (text) => text.includes('frankenmuth');
+  const isBayCity = (text) => text.includes('bay city') || text.includes('euclid') || text.includes('baycounty');
+  const isMidland = (text) => text.includes('midland');
 
-  const pIsBridgeport = p.includes('bridgeport');
-  const pIsFrankenmuth = p.includes('frankenmuth');
-  const pIsBayCity = p.includes('bay city');
-  const pIsMidland = p.includes('midland');
+  const pOuter = isBridgeport(p) || isFrankenmuth(p) || isBayCity(p) || isMidland(p);
+  const dOuter = isBridgeport(d) || isFrankenmuth(d) || isBayCity(d) || isMidland(d);
 
-  // Matrix Evaluation based on exact rules
-  if (!pIsBridgeport && !pIsFrankenmuth && !pIsBayCity && !pIsMidland && isBridgeport) return 20;
-  if (pIsBridgeport && !isBridgeport && !isFrankenmuth && !isBayCity && !isMidland) return 25;
-  if (!pIsBridgeport && !pIsFrankenmuth && !pIsBayCity && !pIsMidland && (isFrankenmuth || isBayCity)) return 30;
-  if ((pIsFrankenmuth || pIsBayCity) && !isBridgeport && !isFrankenmuth && !isBayCity && !isMidland) return 45;
-  if ((!pIsBridgeport && !pIsFrankenmuth && !pIsBayCity && !pIsMidland && isMidland) || (pIsMidland && !isBridgeport && !isFrankenmuth && !isBayCity && !isMidland)) return 45;
+  // Exact Routing Matrix
+  if (!pOuter && isBridgeport(d)) return 20;
+  if (isBridgeport(p) && !dOuter) return 25;
+  if (!pOuter && (isFrankenmuth(d) || isBayCity(d))) return 30;
+  if ((isFrankenmuth(p) || isBayCity(p)) && !dOuter) return 45;
+  if ((!pOuter && isMidland(d)) || (isMidland(p) && !dOuter)) return 45;
   
-  // Local Saginaw default ($15) if no outer city keywords trigger
-  if (!isBridgeport && !isFrankenmuth && !isBayCity && !isMidland && !pIsBridgeport && !pIsFrankenmuth && !pIsBayCity && !pIsMidland) return 15;
+  // Local Saginaw default ($15)
+  if (!pOuter && !dOuter) return 15;
 
-  return 35; // Fallback for other combinations
+  return 35; // Inter-city or custom fallback
 }
 
 function updatePrice() {
