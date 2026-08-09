@@ -3,34 +3,52 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Luxury Lifts</title>
+<title>Luxury Lifts | Cadillac CT4 Service</title>
 <style>
-body { background: #121212; color: #fff; font-family: sans-serif; padding: 20px; margin: 0; }
-.box { max-width: 400px; margin: auto; background: #1e1e1e; padding: 20px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
-h2 { text-align: center; color: #f39c12; margin-top: 0; }
-label { display: block; margin-top: 12px; font-size: 14px; color: #ccc; }
-input, button, .cashapp-btn { width: 100%; padding: 12px; margin-top: 5px; box-sizing: border-box; background: #2a2a2a; border: 1px solid #444; color: #fff; border-radius: 4px; font-size: 16px; text-align: center; text-decoration: none; display: block; font-weight: bold; }
-input:focus { border-color: #f39c12; outline: none; }
-.estimate { background: #252525; padding: 10px; margin-top: 15px; text-align: center; border-radius: 4px; font-size: 18px; font-weight: bold; color: #f39c12; border: 1px dashed #444; display: none; }
-button[type="submit"] { background: #f39c12; color: #000; cursor: pointer; margin-top: 15px; }
-.cashapp-btn { background: #00D632; color: #000; margin-top: 10px; }
+body { background: #0a0a0a; color: #f5f5f5; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; padding: 20px; margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+.box { width: 100%; max-width: 420px; background: #161616; padding: 25px; border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.8); border: 1px solid #333; }
+.header { text-align: center; margin-bottom: 20px; }
+h2 { color: #d4af37; margin: 0 0 5px 0; font-size: 26px; letter-spacing: 1px; }
+.subtitle { color: #888; font-size: 13px; text-transform: uppercase; letter-spacing: 2px; }
+.vehicle-badge { background: #222; border: 1px solid #d4af37; color: #d4af37; padding: 10px; border-radius: 6px; text-align: center; font-size: 14px; font-weight: bold; margin-bottom: 20px; display: flex; align-items: center; justify-content: center; gap: 8px; }
+label { display: block; margin-top: 14px; font-size: 13px; color: #aaa; text-transform: uppercase; letter-spacing: 1px; }
+input { width: 100%; padding: 14px; margin-top: 6px; box-sizing: border-box; background: #222; border: 1px solid #444; color: #fff; border-radius: 6px; font-size: 16px; transition: border-color 0.2s; }
+input:focus { border-color: #d4af37; outline: none; }
+.estimate { background: #1f1f1f; padding: 14px; margin-top: 20px; text-align: center; border-radius: 6px; font-size: 20px; font-weight: bold; color: #d4af37; border: 1px dashed #444; display: none; }
+button[type="submit"] { width: 100%; padding: 14px; margin-top: 20px; background: #d4af37; color: #000; border: none; border-radius: 6px; font-size: 16px; font-weight: bold; cursor: pointer; transition: background 0.2s; }
+button[type="submit"]:hover { background: #e5be40; }
+.cashapp-btn { width: 100%; padding: 14px; margin-top: 10px; background: #00D632; color: #000; border-radius: 6px; font-size: 16px; font-weight: bold; text-align: center; text-decoration: none; display: block; box-sizing: border-box; transition: opacity 0.2s; }
+.cashapp-btn:hover { opacity: 0.9; }
 </style>
 </head>
 <body>
 <div class="box">
-<h2>Luxury Lifts</h2>
+<div class="header">
+<h2>LUXURY LIFTS</h2>
+<div class="subtitle">First-Class Private Transport</div>
+</div>
+
+<div class="vehicle-badge">
+  <span>✨ Ride in Style: 2023 Cadillac CT4 350T</span>
+</div>
+
 <form id="form">
 <label for="pickup">Pickup Location</label>
 <input type="text" id="pickup" placeholder="Enter pickup address/city" required>
+
 <label for="dropoff">Dropoff Location</label>
 <input type="text" id="dropoff" placeholder="Enter dropoff address/city" required>
+
 <label for="passengers">Number of Passengers</label>
 <input type="number" id="passengers" value="1" min="1" required>
+
 <div class="estimate" id="price-display">Estimated Fare: $15.00</div>
+
 <button type="submit">Book Ride via Text</button>
 <a href="https://cash.app/$FlipBucks11" target="_blank" class="cashapp-btn">Pay with Cash App</a>
 </form>
 </div>
+
 <script>
 const pickupInput = document.getElementById('pickup');
 const dropoffInput = document.getElementById('dropoff');
@@ -103,7 +121,7 @@ document.getElementById('form').addEventListener('submit', function(e) {
   const d = dropoffInput.value;
   const pass = passInput.value;
   const total = calculateFare();
-  window.location.href = `sms:9899641792?body=` + encodeURIComponent(`New Ride Request!\nPickup: ${p}\nDropoff: ${d}\nPassengers: ${pass}\nTotal: $${total.toFixed(2)}`);
+  window.location.href = `sms:9899641792?body=` + encodeURIComponent(`New Ride Request!\nVehicle: Cadillac CT4 350T\nPickup: ${p}\nDropoff: ${d}\nPassengers: ${pass}\nTotal: $${total.toFixed(2)}`);
 });
 </script>
 </body>
