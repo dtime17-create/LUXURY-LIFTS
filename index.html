@@ -33,7 +33,9 @@ body { background: #050608; color: #fff; height: 100vh; display: flex; flex-dire
 /* App Top Navigation (Dark with Gold) */
 .navbar { display: flex; justify-content: space-between; align-items: center; padding: 10px 20px; background: #050608; border-bottom: 1px solid #1a1d26; }
 .navbar h1 { font-size: 17px; color: #d4af37; letter-spacing: 1px; font-weight: 700; }
+.navbar-right { display: flex; align-items: center; gap: 10px; }
 .status-pill { background: rgba(212, 175, 55, 0.15); color: #d4af37; font-size: 10px; padding: 4px 10px; border-radius: 20px; border: 1px solid rgba(212, 175, 55, 0.3); font-weight: 600; text-transform: uppercase; }
+.call-header-btn { background: #141824; border: 1px solid #282f42; color: #d4af37; font-size: 11px; padding: 4px 10px; border-radius: 20px; text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 4px; }
 
 /* Main Dark Ride Sheet */
 .sheet { flex: 1; background: #0e1117; border-top-left-radius: 24px; border-top-right-radius: 24px; padding: 14px 18px 18px 18px; box-shadow: 0 -10px 30px rgba(0,0,0,0.8); border-top: 1px solid #1f2433; overflow-y: auto; display: flex; flex-direction: column; }
@@ -46,6 +48,11 @@ body { background: #050608; color: #fff; height: 100vh; display: flex; flex-dire
 
 .form-row { display: flex; gap: 8px; }
 .form-row .input-group { flex: 1; }
+
+/* Luggage Checkbox Toggle */
+.luggage-row { display: flex; align-items: center; background: #141824; border: 1px solid #222838; border-radius: 10px; padding: 10px 14px; margin-bottom: 10px; gap: 10px; cursor: pointer; }
+.luggage-row input[type="checkbox"] { width: 16px; height: 16px; accent-color: #d4af37; cursor: pointer; }
+.luggage-row label { font-size: 12px; color: #b0b7c9; font-weight: 600; cursor: pointer; }
 
 /* Ride Selector Option Card */
 .ride-option { display: flex; align-items: center; justify-content: space-between; background: #141824; border: 2px solid #d4af37; border-radius: 12px; padding: 10px 14px; margin: 8px 0; }
@@ -81,7 +88,10 @@ body { background: #050608; color: #fff; height: 100vh; display: flex; flex-dire
 
 <div class="navbar">
   <h1>LUXURY LIFTS</h1>
-  <div class="status-pill">● CT4 Ready</div>
+  <div class="navbar-right">
+    <a href="tel:9899641792" class="call-header-btn">📞 Call Chauffeur</a>
+    <div class="status-pill">● CT4 Ready</div>
+  </div>
 </div>
 
 <!-- Map Up Top -->
@@ -107,6 +117,12 @@ body { background: #050608; color: #fff; height: 100vh; display: flex; flex-dire
         <label for="passengers">Passengers</label>
         <input type="number" id="passengers" value="1" min="1" required>
       </div>
+    </div>
+
+    <!-- Heavy Luggage / Airport Run Option -->
+    <div class="luggage-row" onclick="document.getElementById('luggage').click()">
+      <input type="checkbox" id="luggage" onclick="event.stopPropagation()">
+      <label for="luggage">Heavy Luggage / Airport Gear (CT4 Trunk Space)</label>
     </div>
 
     <div class="ride-option">
@@ -141,7 +157,7 @@ body { background: #050608; color: #fff; height: 100vh; display: flex; flex-dire
   <div class="nav-item active">
     <span>🚗</span>Book
   </div>
-  <div class="nav-item" onclick="alert('Direct Dispatch: 989-964-1792')">
+  <div class="nav-item" onclick="window.location.href='tel:9899641792'">
     <span>📞</span>Support
   </div>
   <div class="nav-item" onclick="window.open('https://cash.app/$FlipBucks11', '_blank')">
@@ -170,6 +186,7 @@ L.marker([43.4195, -83.9531], { icon: ct4Icon }).addTo(map);
 const pickupInput = document.getElementById('pickup');
 const dropoffInput = document.getElementById('dropoff');
 const passInput = document.getElementById('passengers');
+const luggageCheck = document.getElementById('luggage');
 const tierPrice = document.getElementById('tier-price');
 const breakdownBox = document.getElementById('fareBreakdownBox');
 const breakdownBase = document.getElementById('breakdown-base');
@@ -226,10 +243,8 @@ function calculateFareDetails() {
     label = "Inter-City Fare";
   }
 
-  // Extra passenger charge: $5 for each additional passenger past 1
   const extraPassengers = Math.max(0, passengers - 1);
   const passengerFee = extraPassengers * 5;
-
   const total = base + zone + passengerFee;
 
   return { base, zone, passengerFee, total, label, passengers };
@@ -248,6 +263,7 @@ function resetForm() {
   pickupInput.value = '';
   dropoffInput.value = '';
   passInput.value = '1';
+  luggageCheck.checked = false;
   updatePrice();
   pickupInput.focus();
 }
@@ -265,9 +281,10 @@ document.getElementById('form').addEventListener('submit', function(e) {
   const p = pickupInput.value;
   const d = dropoffInput.value;
   const pass = passInput.value;
+  const luggage = luggageCheck.checked ? "Yes (Trunk Space Required)" : "None";
   const res = calculateFareDetails();
   
-  window.location.href = `sms:9899641792?body=` + encodeURIComponent(`New Ride Request!\nVehicle: Cadillac CT4 350T\nPickup: ${p}\nDropoff: ${d}\nPassengers: ${pass}\nTotal: $${res.total.toFixed(2)}`);
+  window.location.href = `sms:9899641792?body=` + encodeURIComponent(`New Ride Request!\nVehicle: Cadillac CT4 350T\nPickup: ${p}\nDropoff: ${d}\nPassengers: ${pass}\nLuggage: ${luggage}\nTotal: $${res.total.toFixed(2)}`);
 });
 </script>
 </body>
