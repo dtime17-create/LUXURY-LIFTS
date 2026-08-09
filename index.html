@@ -41,7 +41,7 @@ body { background: #08090c; color: #fff; height: 100vh; display: flex; flex-dire
 
 .input-group { position: relative; margin-bottom: 10px; }
 .input-group label { position: absolute; left: 14px; top: 8px; font-size: 10px; text-transform: uppercase; color: #8c93a8; letter-spacing: 1px; font-weight: bold; z-index: 2; }
-.input-group input { width: 100%; padding: 24px 14px 8px 14px; background: #1a1e2b; border: 1px solid #282d3d; border-radius: 10px; color: #fff; font-size: 15px; outline: none; transition: border-color 0.2s; cursor: pointer; }
+.input-group input { width: 100%; padding: 24px 14px 8px 14px; background: #1a1e2b; border: 1px solid #282d3d; border-radius: 10px; color: #fff; font-size: 15px; outline: none; transition: border-color 0.2s; }
 .input-group input:focus { border-color: #d4af37; }
 
 /* Delivery-style Popup Selection Dropdown */
@@ -85,19 +85,19 @@ body { background: #08090c; color: #fff; height: 100vh; display: flex; flex-dire
   <form id="form">
     <div class="input-group">
       <label for="pickup">Pickup</label>
-      <input type="text" id="pickup" placeholder="Tap to select location..." autocomplete="off" readonly required>
+      <input type="text" id="pickup" placeholder="Enter street or pick location..." autocomplete="off" required>
       <div id="pickup-suggestions" class="suggestions-list"></div>
     </div>
     
     <div class="input-group">
       <label for="dropoff">Dropoff</label>
-      <input type="text" id="dropoff" placeholder="Tap to select destination..." autocomplete="off" readonly required>
+      <input type="text" id="dropoff" placeholder="Enter street or pick destination..." autocomplete="off" required>
       <div id="dropoff-suggestions" class="suggestions-list"></div>
     </div>
 
     <div class="input-group" style="margin-bottom: 5px;">
       <label for="passengers">Passengers</label>
-      <input type="number" id="passengers" value="1" min="1" required style="cursor: auto;">
+      <input type="number" id="passengers" value="1" min="1" required>
     </div>
 
     <div class="ride-option">
@@ -167,7 +167,7 @@ const locations = [
   "Oakley, MI"
 ];
 
-function populateDropdown(listElement) {
+function setupDropdown(inputElement, listElement) {
   listElement.innerHTML = '';
   locations.forEach(loc => {
     const div = document.createElement('div');
@@ -175,32 +175,26 @@ function populateDropdown(listElement) {
     div.innerText = loc;
     div.addEventListener('click', function(e) {
       e.stopPropagation();
-      if(listElement === pickupList) {
-        pickupInput.value = loc;
-      } else {
-        dropoffInput.value = loc;
-      }
+      inputElement.value = loc;
       listElement.style.display = 'none';
       updatePrice();
     });
     listElement.appendChild(div);
   });
+
+  inputElement.addEventListener('focus', function(e) {
+    e.stopPropagation();
+    listElement.style.display = 'block';
+  });
+
+  inputElement.addEventListener('input', function() {
+    listElement.style.display = 'none'; // Allow free typing without forcing dropdown open
+    updatePrice();
+  });
 }
 
-populateDropdown(pickupList);
-populateDropdown(dropoffList);
-
-pickupInput.addEventListener('click', function(e) {
-  e.stopPropagation();
-  pickupList.style.display = pickupList.style.display === 'block' ? 'none' : 'block';
-  dropoffList.style.display = 'none';
-});
-
-dropoffInput.addEventListener('click', function(e) {
-  e.stopPropagation();
-  dropoffList.style.display = dropoffList.style.display === 'block' ? 'none' : 'block';
-  pickupList.style.display = 'none';
-});
+setupDropdown(pickupInput, pickupList);
+setupDropdown(dropoffInput, dropoffList);
 
 document.addEventListener('click', function() {
   pickupList.style.display = 'none';
@@ -217,7 +211,6 @@ function calculateFare() {
   const isBayCity = (text) => text.includes('bay city');
   const isMidland = (text) => text.includes('midland');
 
-  // Exact Matrix Rules
   if (isSaginaw(p) && isSaginaw(d)) return 15;
   if (isSaginaw(p) && isBridgeport(d)) return 20;
   if (isBridgeport(p) && isSaginaw(d)) return 25;
