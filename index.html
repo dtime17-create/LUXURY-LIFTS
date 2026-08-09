@@ -4,14 +4,19 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <title>Luxury Lifts</title>
+<!-- Leaflet CSS for Real Interactive Map -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
 body { background: #0f1015; color: #fff; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
 
-/* Simulated Map Background */
-.map-bg { position: absolute; top: 0; left: 0; width: 100%; height: 50%; background: #1a1c23; background-image: radial-gradient(#2a2e3d 1px, transparent 1px); background-size: 24px 24px; z-index: 1; display: flex; align-items: center; justify-content: center; }
-.map-pulse { width: 12px; height: 12px; background: #d4af37; border-radius: 50%; box-shadow: 0 0 0 rgba(212, 175, 55, 0.4); animation: pulse 2s infinite; }
-@keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.7); } 70% { box-shadow: 0 0 0 15px rgba(212, 175, 55, 0); } 100% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0); } }
+/* Real Map Background Container */
+#map { position: absolute; top: 0; left: 0; width: 100%; height: 52%; z-index: 1; background: #141721; }
+
+/* Dark mode styling for OpenStreetMap tiles */
+.leaflet-layer, .leaflet-control-zoom-in, .leaflet-control-zoom-out, .leaflet-control-attribution {
+  filter: brightness(0.6) invert(1) contrast(3) hue-rotate(200deg) saturate(0.3);
+}
 
 /* App Top Navigation */
 .navbar { position: relative; z-index: 3; display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; background: rgba(15, 16, 21, 0.85); backdrop-filter: blur(10px); border-bottom: 1px solid #262a36; }
@@ -19,7 +24,7 @@ body { background: #0f1015; color: #fff; height: 100vh; display: flex; flex-dire
 .status-pill { background: rgba(212, 175, 55, 0.15); color: #d4af37; font-size: 11px; padding: 4px 10px; border-radius: 20px; border: 1px solid rgba(212, 175, 55, 0.3); font-weight: 600; text-transform: uppercase; }
 
 /* Main Ride Sheet */
-.sheet { position: relative; z-index: 2; margin-top: auto; background: #161821; border-top-left-radius: 24px; border-top-right-radius: 24px; padding: 20px 20px 30px 20px; box-shadow: 0 -10px 30px rgba(0,0,0,0.6); border-top: 1px solid #2a2e3d; max-height: 75vh; overflow-y: auto; }
+.sheet { position: relative; z-index: 3; margin-top: auto; background: #161821; border-top-left-radius: 24px; border-top-right-radius: 24px; padding: 20px 20px 25px 20px; box-shadow: 0 -10px 30px rgba(0,0,0,0.6); border-top: 1px solid #2a2e3d; max-height: 75vh; overflow-y: auto; }
 .sheet-handle { width: 40px; height: 4px; background: #3a3f52; border-radius: 2px; margin: 0 auto 15px auto; }
 
 .input-group { position: relative; margin-bottom: 12px; }
@@ -47,9 +52,8 @@ body { background: #0f1015; color: #fff; height: 100vh; display: flex; flex-dire
 </head>
 <body>
 
-<div class="map-bg">
-  <div class="map-pulse"></div>
-</div>
+<!-- Real Map Container -->
+<div id="map"></div>
 
 <div class="navbar">
   <h1>LUXURY LIFTS</h1>
@@ -101,7 +105,27 @@ body { background: #0f1015; color: #fff; height: 100vh; display: flex; flex-dire
   </div>
 </div>
 
+<!-- Leaflet JS Library -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
+// Initialize real map centered on Saginaw, MI
+const map = L.map('map', { zoomControl: false }).setView([43.4195, -83.9531], 13);
+
+// Add OpenStreetMap tiles
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  maxZoom: 19,
+  attribution: ''
+}).addTo(map);
+
+// Add a custom marker for your Cadillac CT4 position in Saginaw
+const ct4Icon = L.divIcon({
+  className: 'custom-car-marker',
+  html: '<div style="background:#161821; border:2px solid #d4af37; color:#d4af37; padding:4px 8px; border-radius:12px; font-size:11px; font-weight:bold; white-space:nowrap; box-shadow:0 4px 10px rgba(0,0,0,0.6);">🚗 CT4 Ready</div>',
+  iconSize: [80, 30],
+  iconAnchor: [40, 15]
+});
+L.marker([43.4195, -83.9531], { icon: ct4Icon }).addTo(map);
+
 const pickupInput = document.getElementById('pickup');
 const dropoffInput = document.getElementById('dropoff');
 const passInput = document.getElementById('passengers');
