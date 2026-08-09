@@ -1,66 +1,64 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Luxury Lifts</title>
-  <style>
-    body { background: #121212; color: #fff; font-family: sans-serif; padding: 20px; margin: 0; }
-    .box { max-width: 400px; margin: auto; background: #1e1e1e; padding: 20px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
-    h2 { text-align: center; color: #f39c12; margin-top: 0; }
-    label { display: block; margin-top: 12px; font-size: 14px; color: #ccc; }
-    input, button, .cashapp-btn { width: 100%; padding: 12px; margin-top: 5px; box-sizing: border-box; background: #2a2a2a; border: 1px solid #444; color: #fff; border-radius: 4px; font-size: 16px; text-align: center; text-decoration: none; display: block; font-weight: bold; }
-    input:focus { border-color: #f39c12; outline: none; }
-  <div class="box">
-    <h2>Luxury Lifts</h2>
-    <form id="form">
-      <label for="pickup">Pickup Location</label>
-      <input type="text" id="pickup" placeholder="Enter pickup address" required>
-      
-      <label for="dropoff">Dropoff Location</label>
-      <input type="text" id="dropoff" placeholder="Enter dropoff address" required>
-      
-      <label for="passengers">Number of Passengers</label>
-      <input type="number" id="passengers" value="1" min="1" required>
-
-      <div class="estimate" id="price-display">Estimated Fare: $12.25</div>
-      
-      <button type="submit">Book Ride via Text</button>
-      <a href="https://cash.app/$dtime17" target="_blank" class="cashapp-btn">Pay with Cash App</a>
-    </form>
-  </div>
-  <script>
-    const pickupInput = document.getElementById('pickup');
-    const dropoffInput = document.getElementById('dropoff');
-    const passInput = document.getElementById('passengers');
-    const priceDisplay = document.getElementById('price-display');
-
-    function updatePrice() {
-      const pText = pickupInput.value.trim();
-      const dText = dropoffInput.value.trim();
-
-      if (pText.length > 0 && dText.length > 0) {
-        const pass = parseInt(passInput.value) || 1;
-        const total = (5.0 * 2.00) + 2.00 + (pass * 0.25);
-        priceDisplay.innerText = `Estimated Fare: $${total.toFixed(2)}`;
-        priceDisplay.style.display = 'block';
-      } else {
-        priceDisplay.style.display = 'none';
-      }
-    }
-
-    pickupInput.addEventListener('input', updatePrice);
-    dropoffInput.addEventListener('input', updatePrice);
-    passInput.addEventListener('input', updatePrice);
-
-    document.getElementById('form').addEventListener('submit', function(e) {
-      e.preventDefault();
-      const p = pickupInput.value;
-      const d = dropoffInput.value;
-      const pass = passInput.value;
-      const total = (5.0 * 2.00) + 2.00 + (pass * 0.25);
-      window.location.href = `sms:9899641792?body=${encodeURIComponent(`New Ride Request!\nPickup: ${p}\nDropoff: ${d}\nPassengers: ${pass}\nTotal: $${total.toFixed(2)}`)}`;
-    });
-  </script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Luxury Lifts</title>
+<style>
+body { background: #121212; color: #fff; font-family: sans-serif; padding: 20px; margin: 0; }
+.box { max-width: 400px; margin: auto; background: #1e1e1e; padding: 20px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
+h2 { text-align: center; color: #f39c12; margin-top: 0; }
+label { display: block; margin-top: 12px; font-size: 14px; color: #ccc; }
+input, button, .cashapp-btn { width: 100%; padding: 12px; margin-top: 5px; box-sizing: border-box; background: #2a2a2a; border: 1px solid #444; color: #fff; border-radius: 4px; font-size: 16px; text-align: center; text-decoration: none; display: block; font-weight: bold; }
+input:focus { border-color: #f39c12; outline: none; }
+.estimate { background: #252525; padding: 10px; margin-top: 15px; text-align: center; border-radius: 4px; font-size: 18px; font-weight: bold; color: #f39c12; border: 1px dashed #444; display: none; }
+button[type="submit"] { background: #f39c12; color: #000; cursor: pointer; margin-top: 15px; }
+.cashapp-btn { background: #00D632; color: #000; margin-top: 10px; }
+</style>
+</head>
+<body>
+<div class="box">
+<h2>Luxury Lifts</h2>
+<form id="form">
+<label for="pickup">Pickup Location</label>
+<input type="text" id="pickup" placeholder="Enter pickup address" required>
+<label for="dropoff">Dropoff Location</label>
+<input type="text" id="dropoff" placeholder="Enter dropoff address" required>
+<label for="passengers">Number of Passengers</label>
+<input type="number" id="passengers" value="1" min="1" required>
+<div class="estimate" id="price-display">Estimated Fare: $12.25</div>
+<button type="submit">Book Ride via Text</button>
+<a href="https://cash.app/$dtime17" target="_blank" class="cashapp-btn">Pay with Cash App</a>
+</form>
+</div>
+<script>
+const pickupInput = document.getElementById('pickup');
+const dropoffInput = document.getElementById('dropoff');
+const passInput = document.getElementById('passengers');
+const priceDisplay = document.getElementById('price-display');
+function updatePrice() {
+  const pText = pickupInput.value.trim();
+  const dText = dropoffInput.value.trim();
+  if (pText.length > 0 && dText.length > 0) {
+    const pass = parseInt(passInput.value) || 1;
+    const total = (5.0 * 2.00) + 2.00 + (pass * 0.25);
+    priceDisplay.innerText = `Estimated Fare: $${total.toFixed(2)}`;
+    priceDisplay.style.display = 'block';
+  } else {
+    priceDisplay.style.display = 'none';
+  }
+}
+pickupInput.addEventListener('input', updatePrice);
+dropoffInput.addEventListener('input', updatePrice);
+passInput.addEventListener('input', updatePrice);
+document.getElementById('form').addEventListener('submit', function(e) {
+  e.preventDefault();
+  const p = pickupInput.value;
+  const d = dropoffInput.value;
+  const pass = passInput.value;
+  const total = (5.0 * 2.00) + 2.00 + (pass * 0.25);
+  window.location.href = `sms:9899641792?body=` + encodeURIComponent(`New Ride Request!\nPickup: ${p}\nDropoff: ${d}\nPassengers: ${pass}\nTotal: $${total.toFixed(2)}`);
+});
+</script>
 </body>
-          </html>
+</html>
