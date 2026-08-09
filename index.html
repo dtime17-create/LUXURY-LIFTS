@@ -2,58 +2,110 @@
 <html>
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Luxury Lifts | Cadillac CT4 Service</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>Luxury Lifts</title>
 <style>
-body { background: #0a0a0a; color: #f5f5f5; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; padding: 20px; margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
-.box { width: 100%; max-width: 420px; background: #161616; padding: 25px; border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.8); border: 1px solid #333; }
-.header { text-align: center; margin-bottom: 20px; }
-h2 { color: #d4af37; margin: 0 0 5px 0; font-size: 26px; letter-spacing: 1px; }
-.subtitle { color: #888; font-size: 13px; text-transform: uppercase; letter-spacing: 2px; }
-.vehicle-badge { background: #222; border: 1px solid #d4af37; color: #d4af37; padding: 10px; border-radius: 6px; text-align: center; font-size: 14px; font-weight: bold; margin-bottom: 20px; display: flex; align-items: center; justify-content: center; gap: 8px; }
-label { display: block; margin-top: 14px; font-size: 13px; color: #aaa; text-transform: uppercase; letter-spacing: 1px; }
-input { width: 100%; padding: 14px; margin-top: 6px; box-sizing: border-box; background: #222; border: 1px solid #444; color: #fff; border-radius: 6px; font-size: 16px; transition: border-color 0.2s; }
-input:focus { border-color: #d4af37; outline: none; }
-.estimate { background: #1f1f1f; padding: 14px; margin-top: 20px; text-align: center; border-radius: 6px; font-size: 20px; font-weight: bold; color: #d4af37; border: 1px dashed #444; display: none; }
-button[type="submit"] { width: 100%; padding: 14px; margin-top: 20px; background: #d4af37; color: #000; border: none; border-radius: 6px; font-size: 16px; font-weight: bold; cursor: pointer; transition: background 0.2s; }
-button[type="submit"]:hover { background: #e5be40; }
-.cashapp-btn { width: 100%; padding: 14px; margin-top: 10px; background: #00D632; color: #000; border-radius: 6px; font-size: 16px; font-weight: bold; text-align: center; text-decoration: none; display: block; box-sizing: border-box; transition: opacity 0.2s; }
-.cashapp-btn:hover { opacity: 0.9; }
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+body { background: #0f1015; color: #fff; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+
+/* Simulated Map Background */
+.map-bg { position: absolute; top: 0; left: 0; width: 100%; height: 50%; background: #1a1c23; background-image: radial-gradient(#2a2e3d 1px, transparent 1px); background-size: 24px 24px; z-index: 1; display: flex; align-items: center; justify-content: center; }
+.map-pulse { width: 12px; height: 12px; background: #d4af37; border-radius: 50%; box-shadow: 0 0 0 rgba(212, 175, 55, 0.4); animation: pulse 2s infinite; }
+@keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.7); } 70% { box-shadow: 0 0 0 15px rgba(212, 175, 55, 0); } 100% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0); } }
+
+/* App Top Navigation */
+.navbar { position: relative; z-index: 3; display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; background: rgba(15, 16, 21, 0.85); backdrop-filter: blur(10px); border-bottom: 1px solid #262a36; }
+.navbar h1 { font-size: 18px; color: #d4af37; letter-spacing: 1px; font-weight: 700; }
+.status-pill { background: rgba(212, 175, 55, 0.15); color: #d4af37; font-size: 11px; padding: 4px 10px; border-radius: 20px; border: 1px solid rgba(212, 175, 55, 0.3); font-weight: 600; text-transform: uppercase; }
+
+/* Main Ride Sheet */
+.sheet { position: relative; z-index: 2; margin-top: auto; background: #161821; border-top-left-radius: 24px; border-top-right-radius: 24px; padding: 20px 20px 30px 20px; box-shadow: 0 -10px 30px rgba(0,0,0,0.6); border-top: 1px solid #2a2e3d; max-height: 75vh; overflow-y: auto; }
+.sheet-handle { width: 40px; height: 4px; background: #3a3f52; border-radius: 2px; margin: 0 auto 15px auto; }
+
+.input-group { position: relative; margin-bottom: 12px; }
+.input-group label { position: absolute; left: 14px; top: 10px; font-size: 10px; text-transform: uppercase; color: #8c93a8; letter-spacing: 1px; font-weight: bold; }
+.input-group input { width: 100%; padding: 26px 14px 10px 14px; background: #212431; border: 1px solid #2f3446; border-radius: 10px; color: #fff; font-size: 15px; outline: none; transition: border-color 0.2s; }
+.input-group input:focus { border-color: #d4af37; }
+
+/* Ride Selector Option Card */
+.ride-option { display: flex; align-items: center; justify-content: space-between; background: #212431; border: 2px solid #d4af37; border-radius: 12px; padding: 12px 16px; margin: 15px 0; cursor: pointer; }
+.ride-info h3 { font-size: 15px; color: #fff; margin-bottom: 2px; }
+.ride-info p { font-size: 12px; color: #a0a6bc; }
+.ride-price { font-size: 18px; font-weight: bold; color: #d4af37; }
+
+/* Action Buttons */
+.btn-primary { width: 100%; padding: 15px; background: #d4af37; color: #000; border: none; border-radius: 12px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 5px; text-transform: uppercase; letter-spacing: 0.5px; transition: background 0.2s; }
+.btn-primary:hover { background: #e5be40; }
+.cashapp-btn { width: 100%; padding: 14px; background: #00D632; color: #000; border-radius: 12px; font-size: 15px; font-weight: bold; text-align: center; text-decoration: none; display: block; margin-top: 10px; box-sizing: border-box; }
+
+/* Bottom Nav Bar */
+.bottom-nav { display: flex; justify-content: space-around; background: #111319; border-top: 1px solid #222634; padding: 10px 0; position: relative; z-index: 3; }
+.nav-item { text-align: center; color: #737b93; font-size: 10px; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; cursor: pointer; }
+.nav-item.active { color: #d4af37; }
+.nav-item span { display: block; font-size: 18px; margin-bottom: 2px; }
 </style>
 </head>
 <body>
-<div class="box">
-<div class="header">
-<h2>LUXURY LIFTS</h2>
-<div class="subtitle">First-Class Private Transport</div>
+
+<div class="map-bg">
+  <div class="map-pulse"></div>
 </div>
 
-<div class="vehicle-badge">
-  <span>✨ Ride in Style: 2023 Cadillac CT4 350T</span>
+<div class="navbar">
+  <h1>LUXURY LIFTS</h1>
+  <div class="status-pill">● CT4 Ready</div>
 </div>
 
-<form id="form">
-<label for="pickup">Pickup Location</label>
-<input type="text" id="pickup" placeholder="Enter pickup address/city" required>
+<div class="sheet">
+  <div class="sheet-handle"></div>
+  
+  <form id="form">
+    <div class="input-group">
+      <label for="pickup">Pickup</label>
+      <input type="text" id="pickup" placeholder="Enter pickup location" required>
+    </div>
+    
+    <div class="input-group">
+      <label for="dropoff">Dropoff</label>
+      <input type="text" id="dropoff" placeholder="Enter destination" required>
+    </div>
 
-<label for="dropoff">Dropoff Location</label>
-<input type="text" id="dropoff" placeholder="Enter dropoff address/city" required>
+    <div class="input-group" style="margin-bottom: 5px;">
+      <label for="passengers">Passengers</label>
+      <input type="number" id="passengers" value="1" min="1" required>
+    </div>
 
-<label for="passengers">Number of Passengers</label>
-<input type="number" id="passengers" value="1" min="1" required>
+    <!-- App-style Ride Tier Card -->
+    <div class="ride-option">
+      <div class="ride-info">
+        <h3>Cadillac CT4 Luxury</h3>
+        <p>Private Chauffeur • 350T Turbo</p>
+      </div>
+      <div class="ride-price" id="tier-price">$15.00</div>
+    </div>
 
-<div class="estimate" id="price-display">Estimated Fare: $15.00</div>
+    <button type="submit" class="btn-primary">Request Luxury Lift</button>
+    <a href="https://cash.app/$FlipBucks11" target="_blank" class="cashapp-btn">Pay with Cash App</a>
+  </form>
+</div>
 
-<button type="submit">Book Ride via Text</button>
-<a href="https://cash.app/$FlipBucks11" target="_blank" class="cashapp-btn">Pay with Cash App</a>
-</form>
+<div class="bottom-nav">
+  <div class="nav-item active">
+    <span>🚗</span>Book
+  </div>
+  <div class="nav-item" onclick="alert('Direct Dispatch: 989-964-1792')">
+    <span>📞</span>Support
+  </div>
+  <div class="nav-item" onclick="window.open('https://cash.app/$FlipBucks11', '_blank')">
+    <span>💵</span>Cash App
+  </div>
 </div>
 
 <script>
 const pickupInput = document.getElementById('pickup');
 const dropoffInput = document.getElementById('dropoff');
 const passInput = document.getElementById('passengers');
-const priceDisplay = document.getElementById('price-display');
+const tierPrice = document.getElementById('tier-price');
 
 function calculateFare() {
   const p = pickupInput.value.toLowerCase();
@@ -65,37 +117,13 @@ function calculateFare() {
   const isBayCity = (text) => text.includes('bay city');
   const isMidland = (text) => text.includes('midland');
 
-  // Within Saginaw City or Saginaw Township ($15)
-  if (isSaginawCityOrTownship(p) && isSaginawCityOrTownship(d)) {
-    return 15;
-  }
-  
-  // Saginaw City to Bridgeport ($20)
-  if (isSaginawCityOrTownship(p) && isBridgeport(d)) {
-    return 20;
-  }
-  
-  // Bridgeport to Saginaw City ($25)
-  if (isBridgeport(p) && isSaginawCityOrTownship(d)) {
-    return 25;
-  }
-  
-  // Saginaw City to Frankenmuth or Bay City ($30)
-  if (isSaginawCityOrTownship(p) && (isFrankenmuth(d) || isBayCity(d))) {
-    return 30;
-  }
-  
-  // Frankenmuth or Bay City to Saginaw City ($45)
-  if ((isFrankenmuth(p) || isBayCity(p)) && isSaginawCityOrTownship(d)) {
-    return 45;
-  }
-  
-  // Saginaw City to Midland (either direction) ($45)
-  if ((isSaginawCityOrTownship(p) && isMidland(d)) || (isMidland(p) && isSaginawCityOrTownship(d))) {
-    return 45;
-  }
+  if (isSaginawCityOrTownship(p) && isSaginawCityOrTownship(d)) return 15;
+  if (isSaginawCityOrTownship(p) && isBridgeport(d)) return 20;
+  if (isBridgeport(p) && isSaginawCityOrTownship(d)) return 25;
+  if (isSaginawCityOrTownship(p) && (isFrankenmuth(d) || isBayCity(d))) return 30;
+  if ((isFrankenmuth(p) || isBayCity(p)) && isSaginawCityOrTownship(d)) return 45;
+  if ((isSaginawCityOrTownship(p) && isMidland(d)) || (isMidland(p) && isSaginawCityOrTownship(d))) return 45;
 
-  // Default baseline fare for unlisted routes ($35)
   return 35;
 }
 
@@ -104,10 +132,9 @@ function updatePrice() {
   const dText = dropoffInput.value.trim();
   if (pText.length > 0 && dText.length > 0) {
     const total = calculateFare();
-    priceDisplay.innerText = `Estimated Fare: $${total.toFixed(2)}`;
-    priceDisplay.style.display = 'block';
+    tierPrice.innerText = `$${total.toFixed(2)}`;
   } else {
-    priceDisplay.style.display = 'none';
+    tierPrice.innerText = `$15.00`;
   }
 }
 
