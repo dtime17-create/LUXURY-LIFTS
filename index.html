@@ -1,6 +1,6 @@
-<!DOCTYPE html>
-<html> 
-<head>
+<!DOC<!DOCTYPE html>
+<html
+<head
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Luxury Lifts</title>
@@ -11,7 +11,8 @@
     label { display: block; margin-top: 12px; font-size: 14px; color: #ccc; }
     input, button { width: 100%; padding: 12px; margin-top: 5px; box-sizing: border-box; background: #2a2a2a; border: 1px solid #444; color: #fff; border-radius: 4px; font-size: 16px; }
     input:focus { border-color: #f39c12; outline: none; }
-    button { background: #f39c12; color: #000; font-weight: bold; cursor: pointer; margin-top: 20px; }
+    .estimate { background: #252525; padding: 10px; margin-top: 15px; text-align: center; border-radius: 4px; font-size: 18px; font-weight: bold; color: #f39c12; border: 1px dashed #444; }
+    button { background: #f39c12; color: #000; font-weight: bold; cursor: pointer; margin-top: 15px; }
   </style>
 </head>
 <body>
@@ -26,16 +27,30 @@
       
       <label for="passengers">Number of Passengers</label>
       <input type="number" id="passengers" value="1" min="1" required>
+
+      <div class="estimate" id="price-display">Estimated Fare: $12.25</div>
       
-      <button type="submit">Book Ride</button>
+      <button type="submit">Book Ride via Text</button>
     </form>
   </div>
   <script>
+    const passInput = document.getElementById('passengers');
+    const priceDisplay = document.getElementById('price-display');
+
+    function updatePrice() {
+      const pass = parseInt(passInput.value) || 1;
+      const total = (5.0 * 2.00) + 2.00 + (pass * 0.25);
+      priceDisplay.innerText = `Estimated Fare: $${total.toFixed(2)}`;
+    }
+
+    passInput.addEventListener('input', updatePrice);
+    updatePrice();
+
     document.getElementById('form').addEventListener('submit', function(e) {
       e.preventDefault();
       const p = document.getElementById('pickup').value;
       const d = document.getElementById('dropoff').value;
-      const pass = document.getElementById('passengers').value;
+      const pass = passInput.value;
       const total = (5.0 * 2.00) + 2.00 + (pass * 0.25);
       window.location.href = `sms:9899641792?body=${encodeURIComponent(`New Ride Request!\nPickup: ${p}\nDropoff: ${d}\nPassengers: ${pass}\nTotal: $${total.toFixed(2)}`)}`;
     });
