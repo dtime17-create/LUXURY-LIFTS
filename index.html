@@ -8,12 +8,10 @@
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-body { background: #f4f6f9; color: #1a1d24; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+body { background: #08090c; color: #fff; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
 
 /* Crisp High-Quality Professional Day Map Container */
-#map { width: 100%; height: 250px; min-height: 250px; position: relative; z-index: 1; border-bottom: 1px solid #dcdfe6; }
-
-/* Custom Styling for Leaflet attribution and zoom to match light theme */
+#map { width: 100%; height: 250px; min-height: 250px; position: relative; z-index: 1; border-bottom: 1px solid #1a1d26; }
 .leaflet-container { background: #f0f3f6 !important; }
 
 /* Custom Cadillac CT4 Map Pin Badge */
@@ -32,35 +30,35 @@ body { background: #f4f6f9; color: #1a1d24; height: 100vh; display: flex; flex-d
   gap: 5px;
 }
 
-/* App Top Navigation */
-.navbar { display: flex; justify-content: space-between; align-items: center; padding: 12px 20px; background: #ffffff; border-bottom: 1px solid #e2e5ec; }
-.navbar h1 { font-size: 18px; color: #1a1d24; letter-spacing: 1px; font-weight: 800; }
-.status-pill { background: rgba(0, 180, 80, 0.1); color: #008a3b; font-size: 11px; padding: 4px 10px; border-radius: 20px; border: 1px solid rgba(0, 180, 80, 0.2); font-weight: 700; text-transform: uppercase; }
+/* App Top Navigation (Dark with Gold) */
+.navbar { display: flex; justify-content: space-between; align-items: center; padding: 12px 20px; background: #08090c; border-bottom: 1px solid #1a1d26; }
+.navbar h1 { font-size: 18px; color: #d4af37; letter-spacing: 1px; font-weight: 700; }
+.status-pill { background: rgba(212, 175, 55, 0.15); color: #d4af37; font-size: 11px; padding: 4px 10px; border-radius: 20px; border: 1px solid rgba(212, 175, 55, 0.3); font-weight: 600; text-transform: uppercase; }
 
-/* Main Ride Sheet */
-.sheet { flex: 1; background: #ffffff; border-top-left-radius: 24px; border-top-right-radius: 24px; padding: 20px 20px 25px 20px; box-shadow: 0 -10px 30px rgba(0,0,0,0.08); border-top: 1px solid #e9edf2; overflow-y: auto; display: flex; flex-direction: column; }
-.sheet-handle { width: 40px; height: 4px; background: #d2d6df; border-radius: 2px; margin: 0 auto 15px auto; }
+/* Main Dark Ride Sheet */
+.sheet { flex: 1; background: #12151e; border-top-left-radius: 24px; border-top-right-radius: 24px; padding: 20px 20px 25px 20px; box-shadow: 0 -10px 30px rgba(0,0,0,0.8); border-top: 1px solid #222634; overflow-y: auto; display: flex; flex-direction: column; }
+.sheet-handle { width: 40px; height: 4px; background: #2f3446; border-radius: 2px; margin: 0 auto 15px auto; }
 
 .input-group { position: relative; margin-bottom: 10px; }
-.input-group label { position: absolute; left: 14px; top: 8px; font-size: 10px; text-transform: uppercase; color: #737b8c; letter-spacing: 1px; font-weight: bold; }
-.input-group input { width: 100%; padding: 24px 14px 8px 14px; background: #f7f9fc; border: 1px solid #dce1eb; border-radius: 10px; color: #1a1d24; font-size: 15px; outline: none; transition: border-color 0.2s; }
-.input-group input:focus { border-color: #1a1d24; background: #fff; }
+.input-group label { position: absolute; left: 14px; top: 8px; font-size: 10px; text-transform: uppercase; color: #8c93a8; letter-spacing: 1px; font-weight: bold; }
+.input-group input { width: 100%; padding: 24px 14px 8px 14px; background: #1a1e2b; border: 1px solid #282d3d; border-radius: 10px; color: #fff; font-size: 15px; outline: none; transition: border-color 0.2s; }
+.input-group input:focus { border-color: #d4af37; }
 
 /* Ride Selector Option Card */
-.ride-option { display: flex; align-items: center; justify-content: space-between; background: #f7f9fc; border: 2px solid #1a1d24; border-radius: 12px; padding: 10px 16px; margin: 10px 0; }
-.ride-info h3 { font-size: 15px; color: #1a1d24; margin-bottom: 2px; font-weight: 700; }
-.ride-info p { font-size: 12px; color: #606778; }
-.ride-price { font-size: 18px; font-weight: 800; color: #1a1d24; }
+.ride-option { display: flex; align-items: center; justify-content: space-between; background: #1a1e2b; border: 2px solid #d4af37; border-radius: 12px; padding: 10px 16px; margin: 10px 0; }
+.ride-info h3 { font-size: 15px; color: #fff; margin-bottom: 2px; font-weight: 700; }
+.ride-info p { font-size: 12px; color: #9da3b8; }
+.ride-price { font-size: 18px; font-weight: bold; color: #d4af37; }
 
 /* Action Buttons */
-.btn-primary { width: 100%; padding: 14px; background: #1a1d24; color: #fff; border: none; border-radius: 12px; font-size: 16px; font-weight: 700; cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px; transition: background 0.2s; }
-.btn-primary:hover { background: #333842; }
+.btn-primary { width: 100%; padding: 14px; background: #d4af37; color: #000; border: none; border-radius: 12px; font-size: 16px; font-weight: bold; cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px; transition: background 0.2s; }
+.btn-primary:hover { background: #e5be40; }
 .cashapp-btn { width: 100%; padding: 12px; background: #00D632; color: #000; border-radius: 12px; font-size: 15px; font-weight: bold; text-align: center; text-decoration: none; display: block; margin-top: 8px; box-sizing: border-box; }
 
 /* Bottom Nav Bar */
-.bottom-nav { display: flex; justify-content: space-around; background: #ffffff; border-top: 1px solid #e2e5ec; padding: 10px 0; }
-.nav-item { text-align: center; color: #737b8c; font-size: 10px; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; cursor: pointer; }
-.nav-item.active { color: #1a1d24; }
+.bottom-nav { display: flex; justify-content: space-around; background: #08090c; border-top: 1px solid #141721; padding: 10px 0; }
+.nav-item { text-align: center; color: #6e758c; font-size: 10px; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; cursor: pointer; }
+.nav-item.active { color: #d4af37; }
 .nav-item span { display: block; font-size: 18px; margin-bottom: 2px; }
 </style>
 </head>
@@ -71,9 +69,10 @@ body { background: #f4f6f9; color: #1a1d24; height: 100vh; display: flex; flex-d
   <div class="status-pill">● CT4 Ready</div>
 </div>
 
-<!-- Real High Quality Light Map -->
+<!-- Light Map Up Top -->
 <div id="map"></div>
 
+<!-- Dark Luxury Sheet on Bottom -->
 <div class="sheet">
   <div class="sheet-handle"></div>
   
@@ -85,7 +84,7 @@ body { background: #f4f6f9; color: #1a1d24; height: 100vh; display: flex; flex-d
     
     <div class="input-group">
       <label for="dropoff">Dropoff</label>
-      <input type="text" id="dropoff" placeholder="e.g. Frankenmuth, Midland..." required>
+      <input type="text" id="dropoff" placeholder="e.g. Frankenmuth, Bay City..." required>
     </div>
 
     <div class="input-group" style="margin-bottom: 5px;">
@@ -121,16 +120,13 @@ body { background: #f4f6f9; color: #1a1d24; height: 100vh; display: flex; flex-d
 <!-- Leaflet JS Library -->
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
-// Initialize high-quality vector map centered on Saginaw, MI
 const map = L.map('map', { zoomControl: false }).setView([43.4195, -83.9531], 13);
 
-// Use professional CartoDB Positron tiles (clean, high-end light daytime vector map style used by modern tech apps)
 L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
   maxZoom: 19,
   attribution: ''
 }).addTo(map);
 
-// Add custom crisp marker for your Cadillac CT4 position
 const ct4Icon = L.divIcon({
   className: 'custom-car-marker',
   html: '<div>🚗 Cadillac CT4 Ready</div>',
@@ -155,18 +151,18 @@ function calculateFare() {
     d = d + ' saginaw';
   }
 
-  const isSaginawCityOrTownship = (text) => text.includes('saginaw') || text.includes('oakley') || text.includes('bay road') || text.includes('mackinaw') || text.includes('janes') || text.includes('washington') || text.includes('michigan') || text.includes('tittabawassee') || text.includes('state') || text.includes('court');
+  const isSaginaw = (text) => text.includes('saginaw') || text.includes('oakley') || text.includes('bay road') || text.includes('mackinaw') || text.includes('janes') || text.includes('washington') || text.includes('michigan') || text.includes('tittabawassee') || text.includes('state') || text.includes('court');
   const isBridgeport = (text) => text.includes('bridgeport');
   const isFrankenmuth = (text) => text.includes('frankenmuth');
   const isBayCity = (text) => text.includes('bay city');
   const isMidland = (text) => text.includes('midland');
 
-  if (isSaginawCityOrTownship(p) && isSaginawCityOrTownship(d)) return 15;
-  if (isSaginawCityOrTownship(p) && isBridgeport(d)) return 20;
-  if (isBridgeport(p) && isSaginawCityOrTownship(d)) return 25;
-  if (isSaginawCityOrTownship(p) && (isFrankenmuth(d) || isBayCity(d))) return 30;
-  if ((isFrankenmuth(p) || isBayCity(p)) && isSaginawCityOrTownship(d)) return 45;
-  if ((isSaginawCityOrTownship(p) && isMidland(d)) || (isMidland(p) && isSaginawCityOrTownship(d))) return 45;
+  if (isSaginaw(p) && isSaginaw(d)) return 15;
+  if (isSaginaw(p) && isBridgeport(d)) return 20;
+  if (isBridgeport(p) && isSaginaw(d)) return 25;
+  if (isSaginaw(p) && (isFrankenmuth(d) || isBayCity(d))) return 30;
+  if ((isFrankenmuth(p) || isBayCity(p)) && isSaginaw(d)) return 45;
+  if ((isSaginaw(p) && isMidland(d)) || (isMidland(p) && isSaginaw(d))) return 45;
 
   return 35;
 }
