@@ -1,129 +1,52 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Luxury Lifts</title>
-  <style>
-    :root {
-      --bg: #0a0a0c;
-      --card: #16161a;
-      --accent: #d4af37;
-      --text: #ffffff;
-      --sub: #94a1b2;
-      --border: #333333;
+<script>
+  let userLat = null;
+  let userLon = null;
+  const wCheck = document.getElementById('waiver-check');
+  const aBtn = document.getElementById('agree-btn');
+  const wModal = document.getElementById('waiver-modal');
+
+  if (localStorage.getItem('luxury_waiver_agreed') === 'true') { wModal.style.display = 'none'; }
+
+  wCheck.addEventListener('change', function() {
+    if (this.checked) { aBtn.disabled = false; aBtn.classList.add('active'); } 
+    else { aBtn.disabled = true; aBtn.classList.remove('active'); }
+  });
+
+  aBtn.addEventListener('click', function() {
+    if (!aBtn.disabled) { localStorage.setItem('luxury_waiver_agreed', 'true'); wModal.style.display = 'none'; }
+  });
+
+  document.getElementById('geo-btn').addEventListener('click', function() {
+    const btn = this;
+    if (navigator.geolocation) {
+      btn.innerText = "Locating...";
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          userLat = pos.coords.latitude;
+          userLon = pos.coords.longitude;
+          document.getElementById('pickup').value = `GPS Pin (${userLat.toFixed(4)}, ${userLon.toFixed(4)})`;
+          btn.innerText = "✓ Location Detected";
+        },
+        () => { alert("Ensure location permissions are enabled."); btn.innerText = "📍 Detect Current GPS Location"; }
+      );
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { background: var(--bg); color: var(--text); font-family: system-ui, sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
-    .app-container { width: 100%; max-width: 480px; background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 24px; }
-    .header { text-align: center; margin-bottom: 24px; }
-    .header h1 { color: var(--accent); font-size: 1.8rem; text-transform: uppercase; }
-    .header p { color: var(--sub); font-size: 0.9rem; margin-top: 4px; }
-    .form-group { margin-bottom: 16px; }
-    label { display: block; color: var(--sub); font-size: 0.85rem; margin-bottom: 6px; text-transform: uppercase; }
-    input, select { width: 100%; padding: 12px; background: #121216; border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-size: 1rem; outline: none; }
-    .btn-submit { width: 100%; padding: 14px; background: var(--accent); color: #000; font-weight: bold; border: none; border-radius: 8px; font-size: 1rem; cursor: pointer; margin-top: 10px; }
-    .result-card { display: none; margin-top: 20px; padding: 16px; background: #121216; border: 1px solid var(--accent); border-radius: 8px; text-align: center; }
-    .fare-price { color: var(--accent); font-size: 2.2rem; font-weight: bold; margin: 8px 0; }
-    .modal-overlay { display: flex; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.92); z-index: 99999; justify-content: center; align-items: center; padding: 20px; }
-    .modal-card { background: #16161a; border: 2px solid var(--accent); border-radius: 12px; padding: 20px; max-width: 420px; width: 100%; color: var(--text); z-index: 100000; }
-    .waiver-box { background: #0a0a0c; border: 1px solid var(--border); padding: 12px; border-radius: 6px; height: 120px; overflow-y: auto; font-size: 0.85rem; color: var(--sub); margin-bottom: 16px; line-height: 1.4; -webkit-overflow-scrolling: touch; }
-    .checkbox-group { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; font-size: 0.9rem; cursor: pointer; }
-    .checkbox-group input { width: 22px; height: 22px; accent-color: var(--accent); cursor: pointer; }
-    .btn-agree { width: 100%; padding: 14px; background: #444; color: #888; font-weight: bold; border: none; border-radius: 8px; font-size: 1rem; cursor: not-allowed; }
-    .btn-agree.active { background: var(--accent); color: #000; cursor: pointer; }
-  </style>
-</head>
-<body>
-  <div id="waiver-modal" class="modal-overlay">
-    <div class="modal-card">
-      <h2 style="color:var(--accent); margin-bottom:12px;">Terms & Release Waiver</h2>
-      <div class="waiver-box">
-        <p><strong>1. Services:</strong> Fares are estimates. Driver assumes zero liability for personal injury, property loss, or transit delays.</p><br>
-        <p><strong>2. Conduct:</strong> Passenger assumes full financial responsibility for damages or cleaning fees incurred during transit.</p>
-      </div>
-      <label class="checkbox-group">
-        <input type="checkbox" id="waiver-check">
-        <span>I agree to the terms and release waiver.</span>
-      </label>
-      <button id="agree-btn" class="btn-agree" disabled>Agree & Proceed</button>
-    </div>
-  </div>
-  <div class="app-container">
-    <div class="header">
-      <h1>Luxury Lifts</h1>
-      <p>Great Lakes Bay Region Rides</p>
-    </div>
-    <form id="booking-form">
-      <div class="form-group">
-        <label for="pickup">Pickup Location</label>
-        <input type="text" id="pickup" placeholder="Current Location or Address" required>
-      </div>
-      <button type="button" id="geo-btn" class="btn-submit" style="background:#222; color:var(--accent); border:1px solid var(--accent); margin-bottom:16px;">📍 Detect Current GPS Location</button>
-      <div class="form-group">
-        <label for="dropoff">Drop-off Destination</label>
-        <input type="text" id="dropoff" placeholder="Destination Address" required>
-      </div>
-      <div class="form-group">
-        <label for="passengers">Extra Passengers</label>
-        <select id="passengers">
-          <option value="0">0 Extra</option>
-          <option value="1">1 Extra (+$0.25)</option>
-          <option value="2">2 Extra (+$0.50)</option>
-          <option value="3">3 Extra (+$0.75)</option>
-        </select>
-      </div>
-      <button type="submit" class="btn-submit">Calculate Fare</button>
-    </form>
-    <div id="result" class="result-card">
-      <h3>Estimated Fare</h3>
-      <div id="fare-price" class="fare-price">$0.00</div>
-      <p id="fare-breakdown" style="color:var(--sub); font-size:0.85rem"></p>
-    </div>
-  </div>
-  <script>
-    let userLat = null;
-    let userLon = null;
-    const wCheck = document.getElementById('waiver-check');
-    const aBtn = document.getElementById('agree-btn');
-    const wModal = document.getElementById('waiver-modal');
+  });document.getElementById('booking-form').addEventListener('submit', function(e) {
+  e.preventDefault();
+  const pickup = document.getElementById('pickup').value;
+  const dropoff = document.getElementById('dropoff').value;
+  const p = parseInt(document.getElementById('passengers').value) || 0;
+  
+  let estimatedMiles = 5.0; 
+  const total = 2.00 + (estimatedMiles * 2.00) + (p * 0.25);
+  
+  document.getElementById('fare-price').innerText = '$' + total.toFixed(2);
+  document.getElementById('fare-breakdown').innerText = estimatedMiles + ' estimated road miles + ' + p + ' extra passenger(s)';
+  document.getElementById('result').style.display = 'block';
 
-    if (localStorage.getItem('luxury_waiver_agreed') === 'true') { wModal.style.display = 'none'; }
+  const myPhoneNumber = "9899641792";
+  const message = encodeURIComponent(`New Luxury Lifts Ride Request!\nPickup: ${pickup}\nDropoff: ${dropoff}\nPassengers: ${p}\nTotal Fare: $${total.toFixed(2)}`);
+  
+  window.location.href = `sms:${myPhoneNumber}?body=${message}`;
+});
 
-    wCheck.addEventListener('change', function() {
-      if (this.checked) { aBtn.disabled = false; aBtn.classList.add('active'); } 
-      else { aBtn.disabled = true; aBtn.classList.remove('active'); }
-    });
-
-    aBtn.addEventListener('click', function() {
-      if (!aBtn.disabled) { localStorage.setItem('luxury_waiver_agreed', 'true'); wModal.style.display = 'none'; }
-    });
-
-    document.getElementById('geo-btn').addEventListener('click', function() {
-      const btn = this;
-      if (navigator.geolocation) {
-        btn.innerText = "Locating...";
-        navigator.geolocation.getCurrentPosition(
-          (pos) => {
-            userLat = pos.coords.latitude;
-            userLon = pos.coords.longitude;
-            document.getElementById('pickup').value = `GPS Pin (${userLat.toFixed(4)}, ${userLon.toFixed(4)})`;
-            btn.innerText = "✓ Location Detected";
-          },
-          () => { alert("Ensure location permissions are enabled."); btn.innerText = "📍 Detect Current GPS Location"; }
-        );
-      }
-    });
-
-    document.getElementById('booking-form').addEventListener('submit', function(e) {
-      e.preventDefault();
-      const p = parseInt(document.getElementById('passengers').value) || 0;
-      let estimatedMiles = 5.0; 
-      const total = 2.00 + (estimatedMiles * 2.00) + (p * 0.25);
-      document.getElementById('fare-price').innerText = '$' + total.toFixed(2);
-      document.getElementById('fare-breakdown').innerText = estimatedMiles + ' estimated road miles + ' + p + ' extra passenger(s)';
-      document.getElementById('result').style.display = 'block';
-    });
-  </script>
-</body>
-</html>
+</script>
