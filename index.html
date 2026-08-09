@@ -68,12 +68,12 @@ body { background: #08090c; color: #fff; height: 100vh; display: flex; flex-dire
   <form id="form">
     <div class="input-group">
       <label for="pickup">Pickup</label>
-      <input type="text" id="pickup" placeholder="Enter pickup location" required>
+      <input type="text" id="pickup" placeholder="e.g. Bay Road, Janes St, downtown..." required>
     </div>
     
     <div class="input-group">
       <label for="dropoff">Dropoff</label>
-      <input type="text" id="dropoff" placeholder="Enter destination" required>
+      <input type="text" id="dropoff" placeholder="e.g. Frankenmuth, Midland, Airport..." required>
     </div>
 
     <div class="input-group" style="margin-bottom: 5px;">
@@ -114,8 +114,16 @@ const passInput = document.getElementById('passengers');
 const tierPrice = document.getElementById('tier-price');
 
 function calculateFare() {
-  const p = pickupInput.value.toLowerCase();
-  const d = dropoffInput.value.toLowerCase();
+  let p = pickupInput.value.toLowerCase().trim();
+  let d = dropoffInput.value.toLowerCase().trim();
+
+  // Smart defaults: if user doesn't specify a city, assume Saginaw local context unless specified otherwise
+  if(p && !p.includes('saginaw') && !p.includes('bridgeport') && !p.includes('frankenmuth') && !p.includes('bay city') && !p.includes('midland') && !p.includes('oakley')) {
+    p = p + ' saginaw';
+  }
+  if(d && !d.includes('saginaw') && !d.includes('bridgeport') && !d.includes('frankenmuth') && !d.includes('bay city') && !d.includes('midland') && !d.includes('oakley')) {
+    d = d + ' saginaw';
+  }
 
   const isSaginawCityOrTownship = (text) => text.includes('saginaw') || text.includes('oakley') || text.includes('bay road') || text.includes('mackinaw') || text.includes('janes') || text.includes('washington') || text.includes('michigan') || text.includes('tittabawassee') || text.includes('state') || text.includes('court');
   const isBridgeport = (text) => text.includes('bridgeport');
