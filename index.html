@@ -85,13 +85,13 @@ body { background: #08090c; color: #fff; height: 100vh; display: flex; flex-dire
   <form id="form">
     <div class="input-group">
       <label for="pickup">Pickup</label>
-      <input type="text" id="pickup" placeholder="Enter pickup address..." autocomplete="off" required>
+      <input type="text" id="pickup" placeholder="Type any custom street address..." autocomplete="off" required>
       <div id="pickup-suggestions" class="suggestions-list"></div>
     </div>
     
     <div class="input-group">
       <label for="dropoff">Dropoff</label>
-      <input type="text" id="dropoff" placeholder="Enter dropoff destination..." autocomplete="off" required>
+      <input type="text" id="dropoff" placeholder="Type any custom street destination..." autocomplete="off" required>
       <div id="dropoff-suggestions" class="suggestions-list"></div>
     </div>
 
@@ -167,7 +167,7 @@ const locations = [
   "Oakley, MI"
 ];
 
-function setupDropdown(inputElement, listElement) {
+function setupField(inputElement, listElement) {
   listElement.innerHTML = '';
   locations.forEach(loc => {
     const div = document.createElement('div');
@@ -182,19 +182,21 @@ function setupDropdown(inputElement, listElement) {
     listElement.appendChild(div);
   });
 
-  inputElement.addEventListener('focus', function(e) {
+  // Show quick list on click, but DO NOT block free typing
+  inputElement.addEventListener('click', function(e) {
     e.stopPropagation();
-    listElement.style.display = 'block';
+    listElement.style.display = listElement.style.display === 'block' ? 'none' : 'block';
   });
 
+  // Full freedom to type numbers, house numbers, and custom street names
   inputElement.addEventListener('input', function() {
     listElement.style.display = 'none';
     updatePrice();
   });
 }
 
-setupDropdown(pickupInput, pickupList);
-setupDropdown(dropoffInput, dropoffList);
+setupField(pickupInput, pickupList);
+setupField(dropoffInput, dropoffList);
 
 document.addEventListener('click', function() {
   pickupList.style.display = 'none';
@@ -205,26 +207,33 @@ function calculateFare() {
   const p = pickupInput.value.toLowerCase().trim();
   const d = dropoffInput.value.toLowerCase().trim();
 
-  // Helper match checks
-  const isBridgeport = (text) => text.includes('bridgeport');
-  const isFrankenmuth = (text) => text.includes('frankenmuth');
-  const isBayCity = (text) => text.includes('bay city');
-  const isMidland = (text) => text.includes('midland');
+  const hasKeyword = (text, keywords) => keywords.some(k => text.includes(k));
 
-  // If it's explicitly one of the outer cities, it's not Saginaw local
-  const isOuterCity = (text) => isBridgeport(text) || isFrankenmuth(text) || isBayCity(text) || isMidland(text);
-
-  // Strict Matrix Execution
-  if (!isOuterCity(p) && isBridgeport(d)) return 20;
-  if (isBridgeport(p) && !isOuterCity(d)) return 25;
-  if (!isOuterCity(p) && (isFrankenmuth(d) || isBayCity(d))) return 30;
-  if ((isFrankenmuth(p) || isBayCity(p)) && !isOuterCity(d)) return 45;
-  if ((!isOuterCity(p) && isMidland(d)) || (isMidland(p) && !isOuterCity(d))) return 45;
+  const bridgeportKeys = ['bridgeport'];
+  const frankenmuthKeys = ['frankenmuth'];
+  const bayCityKeys = ['bay city'];
+  const midlandKeys = ['midland'];
   
-  // If both are local/Saginaw addresses or blank
-  if (!isOuterCity(p) && !isOuterCity(d)) return 15;
+  const saginawKeys = ['saginaw', 'oakley', 'bay road', 'mackinaw', 'janes', 'washington', 'michigan', 'tittabawassee', 'state', 'court', 'meridian', 'hackett', 'gsm', 'weber', 'holland', 'geneva'];
 
-  return 35; // Fallback for other long-distance mixes
+  const isBridgeport = (text) => hasKeyword(text, bridgeportKeys);
+  const isFrankenmuth = (text) => hasKeyword(text, frankenmuthKeys);
+  const isBayCity = (text) => hasKeyword(text, bayCityKeys);
+  const isMidland = (text) => hasKeyword(text, midlandKeys);
+
+  const isOuter = (text) => isBridgeport(text) || isFrankenmuth(text) || isBayCity(text) || isMidland(text);
+
+  // Real-time matrix logic handling custom house/street numbers seamlessly:
+  if (!isOuter(p) && isBridgeport(d)) return 20;
+  if (isBridgeport(p) && !isOuter(d)) return 25;
+  if (!isOuter(p) && (isFrankenmuth(d) || isBayCity(d))) return 30;
+  if ((isFrankenmuth(p) || isBayCity(p)) && !isOuter(d)) return 45;
+  if ((!isOuter(p) && isMidland(d)) || (isMidland(p) && !isOuter(d))) return 45;
+  
+  // Default local Saginaw or custom typed street addresses within local zone
+  if (!isOuter(p) && !isOuter(d)) return 15;
+
+  return 35;
 }
 
 function updatePrice() {
