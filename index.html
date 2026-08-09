@@ -41,12 +41,12 @@ body { background: #08090c; color: #fff; height: 100vh; display: flex; flex-dire
 
 .input-group { position: relative; margin-bottom: 10px; }
 .input-group label { position: absolute; left: 14px; top: 8px; font-size: 10px; text-transform: uppercase; color: #8c93a8; letter-spacing: 1px; font-weight: bold; z-index: 2; }
-.input-group input { width: 100%; padding: 24px 14px 8px 14px; background: #1a1e2b; border: 1px solid #282d3d; border-radius: 10px; color: #fff; font-size: 15px; outline: none; transition: border-color 0.2s; }
+.input-group input { width: 100%; padding: 24px 14px 8px 14px; background: #1a1e2b; border: 1px solid #282d3d; border-radius: 10px; color: #fff; font-size: 15px; outline: none; transition: border-color 0.2s; cursor: pointer; }
 .input-group input:focus { border-color: #d4af37; }
 
-/* Autocomplete Suggestion Dropdown Box */
-.suggestions-list { position: absolute; top: 100%; left: 0; right: 0; background: #1a1e2b; border: 1px solid #d4af37; border-top: none; border-bottom-left-radius: 10px; border-bottom-right-radius: 10px; z-index: 99; max-height: 150px; overflow-y: auto; display: none; box-shadow: 0 8px 20px rgba(0,0,0,0.5); }
-.suggestion-item { padding: 10px 14px; font-size: 13px; color: #fff; cursor: pointer; border-bottom: 1px solid #282d3d; }
+/* Delivery-style Popup Selection Dropdown */
+.suggestions-list { position: absolute; top: 100%; left: 0; right: 0; background: #1a1e2b; border: 1px solid #d4af37; border-top: none; border-bottom-left-radius: 10px; border-bottom-right-radius: 10px; z-index: 99; max-height: 180px; overflow-y: auto; display: none; box-shadow: 0 8px 20px rgba(0,0,0,0.6); }
+.suggestion-item { padding: 12px 14px; font-size: 14px; color: #fff; cursor: pointer; border-bottom: 1px solid #282d3d; }
 .suggestion-item:last-child { border-bottom: none; }
 .suggestion-item:hover { background: #252b3d; color: #d4af37; }
 
@@ -85,19 +85,19 @@ body { background: #08090c; color: #fff; height: 100vh; display: flex; flex-dire
   <form id="form">
     <div class="input-group">
       <label for="pickup">Pickup</label>
-      <input type="text" id="pickup" placeholder="e.g. Bay Road, Janes St..." autocomplete="off" required>
+      <input type="text" id="pickup" placeholder="Tap to select location..." autocomplete="off" readonly required>
       <div id="pickup-suggestions" class="suggestions-list"></div>
     </div>
     
     <div class="input-group">
       <label for="dropoff">Dropoff</label>
-      <input type="text" id="dropoff" placeholder="e.g. Frankenmuth, Bay City..." autocomplete="off" required>
+      <input type="text" id="dropoff" placeholder="Tap to select destination..." autocomplete="off" readonly required>
       <div id="dropoff-suggestions" class="suggestions-list"></div>
     </div>
 
     <div class="input-group" style="margin-bottom: 5px;">
       <label for="passengers">Passengers</label>
-      <input type="number" id="passengers" value="1" min="1" required>
+      <input type="number" id="passengers" value="1" min="1" required style="cursor: auto;">
     </div>
 
     <div class="ride-option">
@@ -150,72 +150,66 @@ const dropoffList = document.getElementById('dropoff-suggestions');
 const passInput = document.getElementById('passengers');
 const tierPrice = document.getElementById('tier-price');
 
-// Live Autocomplete Handler using OpenStreetMap Nominatim API centered around Michigan region
-function setupAutocomplete(inputElement, listElement) {
-  let timeout = null;
+const locations = [
+  "Bay Road, Saginaw",
+  "Janes Street, Saginaw",
+  "Mackinaw Street, Saginaw",
+  "Downtown Saginaw",
+  "Tittabawassee Road, Saginaw",
+  "State Street, Saginaw",
+  "Court Street, Saginaw",
+  "Washington Avenue, Saginaw",
+  "Michigan Avenue, Saginaw",
+  "Bridgeport, MI",
+  "Frankenmuth, MI",
+  "Bay City, MI",
+  "Midland, MI",
+  "Oakley, MI"
+];
 
-  inputElement.addEventListener('input', function() {
-    clearTimeout(timeout);
-    const query = inputElement.value.trim();
-    updatePrice();
-
-    if (query.length < 3) {
+function populateDropdown(listElement) {
+  listElement.innerHTML = '';
+  locations.forEach(loc => {
+    const div = document.createElement('div');
+    div.className = 'suggestion-item';
+    div.innerText = loc;
+    div.addEventListener('click', function(e) {
+      e.stopPropagation();
+      if(listElement === pickupList) {
+        pickupInput.value = loc;
+      } else {
+        dropoffInput.value = loc;
+      }
       listElement.style.display = 'none';
-      return;
-    }
-
-    timeout = setTimeout(() => {
-      // Restrict search bounds roughly around Michigan for hyper-relevant local address matches
-      const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query + ', Michigan')}&&addressdetails=1&limit=5`;
-
-      fetch(url)
-        .then(response => response.json())
-        .then(data => {
-          listElement.innerHTML = '';
-          if (data.length > 0) {
-            listElement.style.display = 'block';
-            data.forEach(item => {
-              const div = document.createElement('div');
-              div.className = 'suggestion-item';
-              div.innerText = item.display_name.split(', MI')[0] + ', MI'; // Clean up display name
-              div.addEventListener('click', function() {
-                inputElement.value = div.innerText;
-                listElement.style.display = 'none';
-                updatePrice();
-              });
-              listElement.appendChild(div);
-            });
-          } else {
-            listElement.style.display = 'none';
-          }
-        })
-        .catch(err => {
-          listElement.style.display = 'none';
-        });
-    }, 300);
-  });
-
-  // Hide dropdown if clicked outside
-  document.addEventListener('click', function(e) {
-    if (!inputElement.contains(e.target) && !listElement.contains(e.target)) {
-      listElement.style.display = 'none';
-    }
+      updatePrice();
+    });
+    listElement.appendChild(div);
   });
 }
 
-setupAutocomplete(pickupInput, pickupList);
-setupAutocomplete(dropoffInput, dropoffList);
+populateDropdown(pickupList);
+populateDropdown(dropoffList);
+
+pickupInput.addEventListener('click', function(e) {
+  e.stopPropagation();
+  pickupList.style.display = pickupList.style.display === 'block' ? 'none' : 'block';
+  dropoffList.style.display = 'none';
+});
+
+dropoffInput.addEventListener('click', function(e) {
+  e.stopPropagation();
+  dropoffList.style.display = dropoffList.style.display === 'block' ? 'none' : 'block';
+  pickupList.style.display = 'none';
+});
+
+document.addEventListener('click', function() {
+  pickupList.style.display = 'none';
+  dropoffList.style.display = 'none';
+});
 
 function calculateFare() {
   let p = pickupInput.value.toLowerCase().trim();
   let d = dropoffInput.value.toLowerCase().trim();
-
-  if(p && !p.includes('saginaw') && !p.includes('bridgeport') && !p.includes('frankenmuth') && !p.includes('bay city') && !p.includes('midland') && !p.includes('oakley')) {
-    p = p + ' saginaw';
-  }
-  if(d && !d.includes('saginaw') && !d.includes('bridgeport') && !d.includes('frankenmuth') && !d.includes('bay city') && !d.includes('midland') && !d.includes('oakley')) {
-    d = d + ' saginaw';
-  }
 
   const isSaginaw = (text) => text.includes('saginaw') || text.includes('oakley') || text.includes('bay road') || text.includes('mackinaw') || text.includes('janes') || text.includes('washington') || text.includes('michigan') || text.includes('tittabawassee') || text.includes('state') || text.includes('court');
   const isBridgeport = (text) => text.includes('bridgeport');
@@ -223,6 +217,7 @@ function calculateFare() {
   const isBayCity = (text) => text.includes('bay city');
   const isMidland = (text) => text.includes('midland');
 
+  // Exact Matrix Rules
   if (isSaginaw(p) && isSaginaw(d)) return 15;
   if (isSaginaw(p) && isBridgeport(d)) return 20;
   if (isBridgeport(p) && isSaginaw(d)) return 25;
