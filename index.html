@@ -79,12 +79,12 @@ body { background: #08090c; color: #fff; height: 100vh; display: flex; flex-dire
   <form id="form">
     <div class="input-group">
       <label for="pickup">Pickup</label>
-      <input type="text" id="pickup" placeholder="Enter pickup address..." autocomplete="off" required>
+      <input type="text" id="pickup" value="2323 North Oakley" autocomplete="off" required>
     </div>
     
     <div class="input-group">
       <label for="dropoff">Dropoff</label>
-      <input type="text" id="dropoff" placeholder="Enter dropoff destination..." autocomplete="off" required>
+      <input type="text" id="dropoff" value="711 South Euclid, Bay City" autocomplete="off" required>
     </div>
 
     <div class="input-group" style="margin-bottom: 5px;">
@@ -97,7 +97,7 @@ body { background: #08090c; color: #fff; height: 100vh; display: flex; flex-dire
         <h3>Cadillac CT4 Luxury</h3>
         <p>Private Chauffeur • 350T Turbo</p>
       </div>
-      <div class="ride-price" id="tier-price">$15.00</div>
+      <div class="ride-price" id="tier-price">$30.00</div>
     </div>
 
     <button type="submit" class="btn-primary">Request Luxury Lift</button>
@@ -141,28 +141,32 @@ const passInput = document.getElementById('passengers');
 const tierPrice = document.getElementById('tier-price');
 
 function calculateFare() {
-  const p = pickupInput.value.toLowerCase().trim();
-  const d = dropoffInput.value.toLowerCase().trim();
+  const p = pickupInput.value.toLowerCase();
+  const d = dropoffInput.value.toLowerCase();
 
-  const isBridgeport = (text) => text.includes('bridgeport');
-  const isFrankenmuth = (text) => text.includes('frankenmuth');
   const isBayCity = (text) => text.includes('bay city') || text.includes('euclid') || text.includes('baycounty');
   const isMidland = (text) => text.includes('midland');
+  const isFrankenmuth = (text) => text.includes('frankenmuth');
+  const isBridgeport = (text) => text.includes('bridgeport');
 
-  const pOuter = isBridgeport(p) || isFrankenmuth(p) || isBayCity(p) || isMidland(p);
-  const dOuter = isBridgeport(d) || isFrankenmuth(d) || isBayCity(d) || isMidland(d);
+  const pOuter = isBayCity(p) || isMidland(p) || isFrankenmuth(p) || isBridgeport(p);
+  const dOuter = isBayCity(d) || isMidland(d) || isFrankenmuth(d) || isBridgeport(d);
 
-  // Exact Routing Matrix
+  // 1. Dropoff is Out-of-Town from Local Saginaw ($15 Pickup)
   if (!pOuter && isBridgeport(d)) return 20;
+  if (!pOuter && (isBayCity(d) || isFrankenmuth(d))) return 30;
+  if (!pOuter && isMidland(d)) return 45;
+
+  // 2. Pickup is Out-of-Town going to Local Saginaw
   if (isBridgeport(p) && !dOuter) return 25;
-  if (!pOuter && (isFrankenmuth(d) || isBayCity(d))) return 30;
-  if ((isFrankenmuth(p) || isBayCity(p)) && !dOuter) return 45;
-  if ((!pOuter && isMidland(d)) || (isMidland(p) && !dOuter)) return 45;
-  
-  // Local Saginaw default ($15)
+  if ((isBayCity(p) || isFrankenmuth(p)) && !dOuter) return 45;
+  if (isMidland(p) && !dOuter) return 45;
+
+  // 3. Both local Saginaw
   if (!pOuter && !dOuter) return 15;
 
-  return 35; // Inter-city or custom fallback
+  // 4. Inter-city fallback
+  return 35;
 }
 
 function updatePrice() {
@@ -170,8 +174,14 @@ function updatePrice() {
   tierPrice.innerText = `$${total.toFixed(2)}`;
 }
 
-pickupInput.addEventListener('input', updatePrice);
-dropoffInput.addEventListener('input', updatePrice);
+// Ensure execution on initialization
+updatePrice();
+
+// Attach direct event listeners for every possible input trigger
+['input', 'keyup', 'change', 'paste'].forEach(eventType => {
+  pickupInput.addEventListener(eventType, updatePrice);
+  dropoffInput.addEventListener(eventType, updatePrice);
+});
 
 document.getElementById('form').addEventListener('submit', function(e) {
   e.preventDefault();
