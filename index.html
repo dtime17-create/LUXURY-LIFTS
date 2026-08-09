@@ -21,12 +21,12 @@ button[type="submit"] { background: #f39c12; color: #000; cursor: pointer; margi
 <h2>Luxury Lifts</h2>
 <form id="form">
 <label for="pickup">Pickup Location</label>
-<input type="text" id="pickup" placeholder="e.g. Saginaw City" required>
+<input type="text" id="pickup" placeholder="Enter pickup address/city" required>
 <label for="dropoff">Dropoff Location</label>
-<input type="text" id="dropoff" placeholder="e.g. Frankenmuth" required>
+<input type="text" id="dropoff" placeholder="Enter dropoff address/city" required>
 <label for="passengers">Number of Passengers</label>
 <input type="number" id="passengers" value="1" min="1" required>
-<div class="estimate" id="price-display">Estimated Fare: $35.00</div>
+<div class="estimate" id="price-display">Estimated Fare: $15.00</div>
 <button type="submit">Book Ride via Text</button>
 <a href="https://cash.app/$FlipBucks11" target="_blank" class="cashapp-btn">Pay with Cash App</a>
 </form>
@@ -41,35 +41,39 @@ function calculateFare() {
   const p = pickupInput.value.toLowerCase();
   const d = dropoffInput.value.toLowerCase();
 
+  const isSaginawCityOrTownship = (text) => text.includes('saginaw') || text.includes('oakley') || text.includes('bay road') || text.includes('mackinaw') || text.includes('janes') || text.includes('washington') || text.includes('michigan') || text.includes('tittabawassee') || text.includes('state') || text.includes('court');
+  const isBridgeport = (text) => text.includes('bridgeport');
+  const isFrankenmuth = (text) => text.includes('frankenmuth');
+  const isBayCity = (text) => text.includes('bay city');
+  const isMidland = (text) => text.includes('midland');
+
   // Within Saginaw City or Saginaw Township ($15)
-  if ((p.includes('saginaw city') || p.includes('saginaw township')) && 
-      (d.includes('saginaw city') || d.includes('saginaw township'))) {
+  if (isSaginawCityOrTownship(p) && isSaginawCityOrTownship(d)) {
     return 15;
   }
   
   // Saginaw City to Bridgeport ($20)
-  if (p.includes('saginaw city') && d.includes('bridgeport')) {
+  if (isSaginawCityOrTownship(p) && isBridgeport(d)) {
     return 20;
   }
   
   // Bridgeport to Saginaw City ($25)
-  if (p.includes('bridgeport') && d.includes('saginaw city')) {
+  if (isBridgeport(p) && isSaginawCityOrTownship(d)) {
     return 25;
   }
   
   // Saginaw City to Frankenmuth or Bay City ($30)
-  if (p.includes('saginaw city') && (d.includes('frankenmuth') || d.includes('bay city'))) {
+  if (isSaginawCityOrTownship(p) && (isFrankenmuth(d) || isBayCity(d))) {
     return 30;
   }
   
   // Frankenmuth or Bay City to Saginaw City ($45)
-  if ((p.includes('frankenmuth') || p.includes('bay city')) && d.includes('saginaw city')) {
+  if ((isFrankenmuth(p) || isBayCity(p)) && isSaginawCityOrTownship(d)) {
     return 45;
   }
   
   // Saginaw City to Midland (either direction) ($45)
-  if ((p.includes('saginaw city') && d.includes('midland')) || 
-      (p.includes('midland') && d.includes('saginaw city'))) {
+  if ((isSaginawCityOrTownship(p) && isMidland(d)) || (isMidland(p) && isSaginawCityOrTownship(d))) {
     return 45;
   }
 
