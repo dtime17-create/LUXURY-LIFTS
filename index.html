@@ -4,38 +4,33 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <title>Luxury Lifts</title>
-<!-- Leaflet CSS for Real Interactive Map -->
+<!-- Leaflet CSS -->
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-body { background: #0f1015; color: #fff; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+body { background: #0b0c10; color: #fff; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
 
-/* Real Map Background Container */
-#map { position: absolute; top: 0; left: 0; width: 100%; height: 52%; z-index: 1; background: #141721; }
-
-/* Dark mode styling for OpenStreetMap tiles */
-.leaflet-layer, .leaflet-control-zoom-in, .leaflet-control-zoom-out, .leaflet-control-attribution {
-  filter: brightness(0.6) invert(1) contrast(3) hue-rotate(200deg) saturate(0.3);
-}
+/* Clean Modern Dark Map Container */
+#map { position: absolute; top: 0; left: 0; width: 100%; height: 52%; z-index: 1; background: #0b0c10; }
 
 /* App Top Navigation */
-.navbar { position: relative; z-index: 3; display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; background: rgba(15, 16, 21, 0.85); backdrop-filter: blur(10px); border-bottom: 1px solid #262a36; }
+.navbar { position: relative; z-index: 3; display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; background: rgba(11, 12, 16, 0.85); backdrop-filter: blur(12px); border-bottom: 1px solid #1f222e; }
 .navbar h1 { font-size: 18px; color: #d4af37; letter-spacing: 1px; font-weight: 700; }
 .status-pill { background: rgba(212, 175, 55, 0.15); color: #d4af37; font-size: 11px; padding: 4px 10px; border-radius: 20px; border: 1px solid rgba(212, 175, 55, 0.3); font-weight: 600; text-transform: uppercase; }
 
 /* Main Ride Sheet */
-.sheet { position: relative; z-index: 3; margin-top: auto; background: #161821; border-top-left-radius: 24px; border-top-right-radius: 24px; padding: 20px 20px 25px 20px; box-shadow: 0 -10px 30px rgba(0,0,0,0.6); border-top: 1px solid #2a2e3d; max-height: 75vh; overflow-y: auto; }
-.sheet-handle { width: 40px; height: 4px; background: #3a3f52; border-radius: 2px; margin: 0 auto 15px auto; }
+.sheet { position: relative; z-index: 3; margin-top: auto; background: #13151c; border-top-left-radius: 24px; border-top-right-radius: 24px; padding: 20px 20px 25px 20px; box-shadow: 0 -10px 30px rgba(0,0,0,0.7); border-top: 1px solid #222633; max-height: 75vh; overflow-y: auto; }
+.sheet-handle { width: 40px; height: 4px; background: #2f3547; border-radius: 2px; margin: 0 auto 15px auto; }
 
 .input-group { position: relative; margin-bottom: 12px; }
 .input-group label { position: absolute; left: 14px; top: 10px; font-size: 10px; text-transform: uppercase; color: #8c93a8; letter-spacing: 1px; font-weight: bold; }
-.input-group input { width: 100%; padding: 26px 14px 10px 14px; background: #212431; border: 1px solid #2f3446; border-radius: 10px; color: #fff; font-size: 15px; outline: none; transition: border-color 0.2s; }
+.input-group input { width: 100%; padding: 26px 14px 10px 14px; background: #1c1f2a; border: 1px solid #2a2f40; border-radius: 10px; color: #fff; font-size: 15px; outline: none; transition: border-color 0.2s; }
 .input-group input:focus { border-color: #d4af37; }
 
 /* Ride Selector Option Card */
-.ride-option { display: flex; align-items: center; justify-content: space-between; background: #212431; border: 2px solid #d4af37; border-radius: 12px; padding: 12px 16px; margin: 15px 0; cursor: pointer; }
+.ride-option { display: flex; align-items: center; justify-content: space-between; background: #1c1f2a; border: 2px solid #d4af37; border-radius: 12px; padding: 12px 16px; margin: 15px 0; cursor: pointer; }
 .ride-info h3 { font-size: 15px; color: #fff; margin-bottom: 2px; }
-.ride-info p { font-size: 12px; color: #a0a6bc; }
+.ride-info p { font-size: 12px; color: #9da3b8; }
 .ride-price { font-size: 18px; font-weight: bold; color: #d4af37; }
 
 /* Action Buttons */
@@ -44,15 +39,14 @@ body { background: #0f1015; color: #fff; height: 100vh; display: flex; flex-dire
 .cashapp-btn { width: 100%; padding: 14px; background: #00D632; color: #000; border-radius: 12px; font-size: 15px; font-weight: bold; text-align: center; text-decoration: none; display: block; margin-top: 10px; box-sizing: border-box; }
 
 /* Bottom Nav Bar */
-.bottom-nav { display: flex; justify-content: space-around; background: #111319; border-top: 1px solid #222634; padding: 10px 0; position: relative; z-index: 3; }
-.nav-item { text-align: center; color: #737b93; font-size: 10px; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; cursor: pointer; }
+.bottom-nav { display: flex; justify-content: space-around; background: #0d0e13; border-top: 1px solid #1a1d26; padding: 10px 0; position: relative; z-index: 3; }
+.nav-item { text-align: center; color: #6e758c; font-size: 10px; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; cursor: pointer; }
 .nav-item.active { color: #d4af37; }
 .nav-item span { display: block; font-size: 18px; margin-bottom: 2px; }
 </style>
 </head>
 <body>
 
-<!-- Real Map Container -->
 <div id="map"></div>
 
 <div class="navbar">
@@ -105,24 +99,24 @@ body { background: #0f1015; color: #fff; height: 100vh; display: flex; flex-dire
   </div>
 </div>
 
-<!-- Leaflet JS Library -->
+<!-- Leaflet JS -->
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
-// Initialize real map centered on Saginaw, MI
+// Initialize map centered on Saginaw, MI
 const map = L.map('map', { zoomControl: false }).setView([43.4195, -83.9531], 13);
 
-// Add OpenStreetMap tiles
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+// Use professional CartoDB Dark Matter tiles for a clean, luxury app aesthetic
+L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
   maxZoom: 19,
   attribution: ''
 }).addTo(map);
 
-// Add a custom marker for your Cadillac CT4 position in Saginaw
+// Custom Cadillac CT4 Map Pin
 const ct4Icon = L.divIcon({
   className: 'custom-car-marker',
-  html: '<div style="background:#161821; border:2px solid #d4af37; color:#d4af37; padding:4px 8px; border-radius:12px; font-size:11px; font-weight:bold; white-space:nowrap; box-shadow:0 4px 10px rgba(0,0,0,0.6);">🚗 CT4 Ready</div>',
-  iconSize: [80, 30],
-  iconAnchor: [40, 15]
+  html: '<div style="background:#1c1f2a; border:2px solid #d4af37; color:#d4af37; padding:6px 10px; border-radius:14px; font-size:11px; font-weight:bold; white-space:nowrap; box-shadow:0 6px 15px rgba(0,0,0,0.8);">🚗 Cadillac CT4</div>',
+  iconSize: [100, 34],
+  iconAnchor: [50, 17]
 });
 L.marker([43.4195, -83.9531], { icon: ct4Icon }).addTo(map);
 
