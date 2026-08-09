@@ -1,54 +1,44 @@
-<script>
-  let userLat = null;
-  let userLon = null;
-  const wCheck = document.getElementById('waiver-check');
-  const aBtn = document.getElementById('agree-btn');
-  const wModal = document.getElementById('waiver-modal');
-
-  if (localStorage.getItem('luxury_waiver_agreed') === 'true') { wModal.style.display = 'none'; }
-
-  wCheck.addEventListener('change', function() {
-    if (this.checked) { aBtn.disabled = false; aBtn.classList.add('active'); } 
-    else { aBtn.disabled = true; aBtn.classList.remove('active'); }
-  });
-
-  aBtn.addEventListener('click', function() {
-    if (!aBtn.disabled) { localStorage.setItem('luxury_waiver_agreed', 'true'); wModal.style.display = 'none'; }
-  });
-
-  document.getElementById('geo-btn').addEventListener('click', function() {
-    const btn = this;
-    if (navigator.geolocation) {
-      btn.innerText = "Locating...";
-      navigator.geolocation.getCurrentPosition(
-        (pos) => {
-          userLat = pos.coords.latitude;
-          userLon = pos.coords.longitude;
-          document.getElementById('pickup').value = `GPS Pin (${userLat.toFixed(4)}, ${userLon.toFixed(4)})`;
-          btn.innerText = "✓ Location Detected";
-        },
-        () => { alert("Ensure location permissions are enabled."); btn.innerText = "📍 Detect Current GPS Location"; }
-      );
-    }
-  });document.getElementById('booking-form').addEventListener('submit', function(e) {
-  e.preventDefault();
-  const pickup = document.getElementById('pickup').value;
-  const dropoff = document.getElementById('dropoff').value;
-  const p = parseInt(document.getElementById('passengers').value) || 0;
-  
-  let estimatedMiles = 5.0; 
-  const total = 2.00 + (estimatedMiles * 2.00) + (p * 0.25);
-  
-  document.getElementById('fare-price').innerText = '$' + total.toFixed(2);
-  document.getElementById('fare-breakdown').innerText = estimatedMiles + ' estimated road miles + ' + p + ' extra passenger(s)';
-  document.getElementById('result').style.display = 'block';
-
-  const myPhoneNumber = "9899641792";
-  const message = encodeURIComponent(`New Luxury Lifts Ride Request!\nPickup: ${pickup}\nDropoff: ${dropoff}\nPassengers: ${p}\nTotal Fare: $${total.toFixed(2)}`);
-    const myPhoneNumber = "9899641792";
-  window.location.href = `sms:${myPhoneNumber}?body=New%20Ride%20Request!`;
-
-  window.location.href = `sms:${myPhoneNumber}?body=${message}`;
-});
-
-</script>
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Luxury Lifts</title>
+  <style>
+    body { background: #121212; color: #fff; font-family: sans-serif; padding: 20px; margin: 0; }
+    .box { max-width: 400px; margin: auto; background: #1e1e1e; padding: 20px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
+    h2 { text-align: center; color: #f39c12; margin-top: 0; }
+    label { display: block; margin-top: 12px; font-size: 14px; color: #ccc; }
+    input, button { width: 100%; padding: 12px; margin-top: 5px; box-sizing: border-box; background: #2a2a2a; border: 1px solid #444; color: #fff; border-radius: 4px; font-size: 16px; }
+    input:focus { border-color: #f39c12; outline: none; }
+    button { background: #f39c12; color: #000; font-weight: bold; cursor: pointer; margin-top: 20px; }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h2>Luxury Lifts</h2>
+    <form id="form">
+      <label for="pickup">Pickup Location</label>
+      <input type="text" id="pickup" placeholder="Enter pickup address" required>
+      
+      <label for="dropoff">Dropoff Location</label>
+      <input type="text" id="dropoff" placeholder="Enter dropoff address" required>
+      
+      <label for="passengers">Number of Passengers</label>
+      <input type="number" id="passengers" value="1" min="1" required>
+      
+      <button type="submit">Book Ride</button>
+    </form>
+  </div>
+  <script>
+    document.getElementById('form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const p = document.getElementById('pickup').value;
+      const d = document.getElementById('dropoff').value;
+      const pass = document.getElementById('passengers').value;
+      const total = (5.0 * 2.00) + 2.00 + (pass * 0.25);
+      window.location.href = `sms:9899641792?body=${encodeURIComponent(`New Ride Request!\nPickup: ${p}\nDropoff: ${d}\nPassengers: ${pass}\nTotal: $${total.toFixed(2)}`)}`;
+    });
+  </script>
+</body>
+</html>
